@@ -284,7 +284,8 @@ Plug 'tpope/vim-surround'
 
 Plug 'tmhedberg/SimpylFold'
 
-Plug 'mhinz/vim-startify'
+Plug 'hardcoreplayers/dashboard-nvim'
+"Plug 'mhinz/vim-startify'
 
 Plug 'junegunn/fzf', { 'do': { -> fzf#install() } }
 
@@ -307,6 +308,20 @@ call plug#end()
 "let g:vsdark_style = "dark"
 "color deus
 color onedark
+
+
+" ==== dashboard-nvim ====
+let g:mapleader="\<Space>"
+let g:dashboard_default_executive = 'fzf'
+nmap <Leader>ss :<C-u>SessionSave<CR>
+nmap <Leader>sl :<C-u>SessionLoad<CR>
+nnoremap <silent> <Leader>fh :DashboardFindHistory<CR>
+nnoremap <silent> <Leader>ff :DashboardFindFile<CR>
+nnoremap <silent> <Leader>tc :DashboardChangeColorscheme<CR>
+nnoremap <silent> <Leader>fw :DashboardFindWord<CR>
+nnoremap <silent> <Leader>fb :DashboardJumpMark<CR>
+nnoremap <silent> <Leader>cn :DashboardNewFile<CR>
+
 
 
 " ==== VimWiki ====
@@ -360,6 +375,7 @@ let g:indent_guides_guide_size = 1
 let g:indent_guides_start_level = 2
 let g:indent_guides_enable_on_vim_startup = 1
 let g:indent_guides_color_change_percent = 1
+let g:indentLine_fileTypeExclude = ['dashboard']
 silent! unmap <LEADER>ig
 autocmd WinEnter * silent! unmap <LEADER>ig
 
@@ -419,16 +435,34 @@ noremap <silent> <C-h> :History<CR>
 noremap <silent> <C-w> :Buffers<CR>
 noremap <leader>; :History:<CR>
 
-" ==== vim-multiple-cursor ====
-let g:multi_cursor_use_default_mapping = 0
-let g:multi_cursor_start_word_key = '<c-k>'
-let g:multi_cursor_select_all_word_key = '<a-k>'
-let g:multi_cursor_start_key = 'g<c-k>'
-let g:multi_cursor_select_all_key = 'g<a-k>'
-let g:multi_cursor_next_key = '<c-k>'
-let g:multi_cursor_prev_key = '<c-p>'
-let g:multi_cursor_skip_key = '<C-s>'
-let g:multi_cursor_quit_key = '<Esc>'
+"" ==== vim-multiple-cursor ====
+"let g:multi_cursor_use_default_mapping = 0
+"let g:multi_cursor_start_word_key = '<c-k>'
+"let g:multi_cursor_select_all_word_key = '<a-k>'
+"let g:multi_cursor_start_key = 'g<c-k>'
+"let g:multi_cursor_select_all_key = 'g<a-k>'
+"let g:multi_cursor_next_key = '<c-k>'
+"let g:multi_cursor_prev_key = '<c-p>'
+"let g:multi_cursor_skip_key = '<C-s>'
+"let g:multi_cursor_quit_key = '<Esc>'
+
+" ==================== vim-visual-multi ====================
+"let g:VM_theme             = 'iceblue'
+"let g:VM_default_mappings = 0
+let g:VM_leader                     = {'default': ',', 'visual': ',', 'buffer': ','}
+let g:VM_maps                       = {}
+"let g:VM_maps['i']                  = ''
+"let g:VM_maps['I']                  = ''
+let g:VM_maps['Find Under']         = '<C-d>'
+let g:VM_maps['Find Subword Under'] = '<C-d>'
+let g:VM_maps['Find Next']          = ''
+let g:VM_maps['Find Prev']          = ''
+let g:VM_maps['Select Cursor Down'] = '<A-J>'
+let g:VM_maps['Select Cursor up']   = '<A-K>'
+let g:VM_maps['Remove Region']      = 'q'
+let g:VM_maps['Skip Region']        = '<c-n>'
+let g:VM_maps["Undo"]               = 'u'
+let g:VM_maps["Redo"]               = 'U'
 
 " ==== Far.vim ====
 noremap <LEADER>f :F  **/*<left><left><left><left><left>
@@ -450,8 +484,8 @@ let g:gitgutter_sign_removed_first_line = '▔'
 let g:gitgutter_sign_modified_removed = '▒'
 nnoremap <LEADER>gf :GitGutterFold<CR>
 nnoremap <C-G> :GitGutterPreviewHunk<CR>
-nnoremap <LEADER>g- :GitGutterPrevHunk<CR>
-nnoremap <LEADER>g= :GitGutterNextHunk<CR>
+nnoremap g- :GitGutterPrevHunk<CR>
+nnoremap g= :GitGutterNextHunk<CR>
 
 
 noremap \g :Git
@@ -722,7 +756,7 @@ set shortmess+=c
 set updatetime=100
 set signcolumn=number
 inoremap <silent><expr> <TAB>
-	\ pumvisible() ? "\<C-d>" :
+	\ pumvisible() ? "\<C-n>" :
 	\ <SID>check_back_space() ? "\<TAB>" :
 	\ coc#refresh()
 inoremap <expr><S-TAB> pumvisible() ? "\<C-p>" : "\<C-h>"
