@@ -14,8 +14,9 @@
 " =====================
 " ==== Header File ====
 " =====================
-"let g:python_host_prog='/Python27/'
-let g:python3_host_prog='/usr/bin/python'
+let g:python_host_prog='/usr/bin/Python2/'
+let g:python3_host_prog='/usr/bin/python3'
+let g:ruby_host_prog='$/home/bear/.local/share/gem/ruby/3.0.0'
 set encoding=utf-8
 let &t_ut=''
 
@@ -189,8 +190,8 @@ noremap tU :tabe split<CR>
 noremap th :-tabnext<CR>
 noremap tl :+tabnext<CR>
 " Move the tabs with tmn and tmi
-noremap tmn :-tabmove<CR>
-noremap tmi :+tabmove<CR>
+noremap tmh :-tabmove<CR>
+noremap tml :+tabmove<CR>
 
 " ============================
 " ==== Other useful stuff ====
@@ -198,7 +199,7 @@ noremap tmi :+tabmove<CR>
 " Spelling Check with <space>sc
 noremap <LEADER>sc :set spell!<CR>
 noremap <C-.> ea<C-x>s
-inoremap <C-x> <Esc>a<C-x>s
+inoremap <C-.> <Esc>a<C-x>s
 
 " Press space twice to jump to the next '<++>' and edit it
 noremap <LEADER><LEADER> <Esc>/<++><CR>:nohlsearch<CR>c4l
@@ -206,8 +207,8 @@ noremap <LEADER><LEADER> <Esc>/<++><CR>:nohlsearch<CR>c4l
 " ===========================
 " ==== Markdown Settings ====
 " ===========================
-source ~/.config/nvim/settings/snippits.vim
-"source ~/.config/nvim/settings/cursor.vim
+"source $HOME/.config/nvim/snippits.vim
+"source $HOME/.config/nvim/cursor.vim
 
 " ==== Compile function ====
 noremap <F5> :call CompileRunGcc()<CR>
@@ -274,7 +275,8 @@ Plug 'junegunn/goyo.vim'
 
 Plug 'vim-python/python-syntax'
 
-Plug 'nathanaelkane/vim-indent-guides'
+"Plug 'nathanaelkane/vim-indent-guides'
+Plug 'Yggdroot/indentLine'
 
 Plug 'kshenoy/vim-signature'
 
@@ -370,14 +372,13 @@ map <LEADER>tm :TableModeToggle<CR>
 " ==== Python-syntax ====
 let g:python_highlight_all = 1
 
-" ==== vim-indent-guide ====
-let g:indent_guides_guide_size = 1
-let g:indent_guides_start_level = 2
-let g:indent_guides_enable_on_vim_startup = 1
-let g:indent_guides_color_change_percent = 1
-let g:indentLine_fileTypeExclude = ['dashboard']
-silent! unmap <LEADER>ig
-autocmd WinEnter * silent! unmap <LEADER>ig
+"" ==== vim-indent-guide ====
+"let g:indent_guides_guide_size = 1
+"let g:indent_guides_start_level = 2
+"let g:indent_guides_enable_on_vim_startup = 1
+"let g:indent_guides_color_change_percent = 1
+"silent! unmap <LEADER>ig
+"autocmd WinEnter * silent! unmap <LEADER>ig
 
 " ==== Goyo ====
 map <LEADER>gy :Goyo<CR>
@@ -467,7 +468,7 @@ let g:VM_maps["Redo"]               = 'U'
 " ==== Far.vim ====
 noremap <LEADER>f :F  **/*<left><left><left><left><left>
 let g:far#mapping = {
-		\ "replace_undo" : ["l"],
+		\ "replace_undo" : ["u"],
 		\ }
 
 
@@ -721,7 +722,6 @@ END
 " ==== coc.nvim ====
 let g:coc_global_extensions = [
     \ 'coc-css',
-    \ 'coc-clangd',
 	\ 'coc-diagnostic',
 	\ 'coc-docker',
 	\ 'coc-eslint',
@@ -738,7 +738,6 @@ let g:coc_global_extensions = [
 	\ 'coc-prettier',
 	\ 'coc-prisma',
 	\ 'coc-pyright',
-    \ 'coc-python',
 	\ 'coc-snippets',
 	\ 'coc-sourcekit',
 	\ 'coc-stylelint',
@@ -750,11 +749,11 @@ let g:coc_global_extensions = [
 	\ 'coc-vetur',
 	\ 'coc-vimlsp',
 	\ 'coc-yaml',
-	\ 'coc-yank',]
+	\ 'coc-yank',
+	\ 'https://github.com/rodrigore/coc-tailwind-intellisense']
 
 set shortmess+=c
 set updatetime=100
-set signcolumn=number
 inoremap <silent><expr> <TAB>
 	\ pumvisible() ? "\<C-n>" :
 	\ <SID>check_back_space() ? "\<TAB>" :
