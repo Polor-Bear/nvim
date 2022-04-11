@@ -14,11 +14,11 @@
 " =====================
 " ==== Header File ====
 " =====================
+let &t_ut=''
+set encoding=utf-8
 let g:python_host_prog='/usr/bin/Python2/'
 let g:python3_host_prog='/usr/bin/python3'
 let g:ruby_host_prog='$/home/bear/.local/share/gem/ruby/3.0.0'
-set encoding=utf-8
-let &t_ut=''
 
 " =========================
 " ==== Editor Behavior ====
@@ -154,13 +154,13 @@ noremap <LEADER>l <C-w>l
 noremap qf <C-w>o
 
 " Disable the default s key
-noremap s <nop>
+"noremap s <nop>
 
 " split the screens to up (horizontal), down(horizontal), left(vertical), right<vertical)
-noremap sk :set nosplitbelow<CR>:split<CR>
-noremap sj :set splitbelow<CR>:split<CR>
-noremap sh :set nosplitright<CR>:vsplit<CR>
-noremap sl :set splitright<CR>:vsplit<CR>
+noremap <LEADER>sk :set nosplitbelow<CR>:split<CR>
+noremap <LEADER>sj :set splitbelow<CR>:split<CR>
+noremap <LEADER>sh :set nosplitright<CR>:vsplit<CR>
+noremap <LEADER>sl :set splitright<CR>:vsplit<CR>
 
 " Place the two screens up and down
 noremap sv <C-w>t<C-w>H
@@ -200,38 +200,86 @@ noremap tml :+tabmove<CR>
 noremap <LEADER>sc :set spell!<CR>
 noremap <C-.> ea<C-x>s
 inoremap <C-.> <Esc>a<C-x>s
+noremap gb evb
 
 " Press space twice to jump to the next '<++>' and edit it
-noremap <LEADER><LEADER> <Esc>/<++><CR>:nohlsearch<CR>c4l
+"noremap <LEADER><LEADER> <Esc>/<++><CR>:nohlsearch<CR>c4l
 
 " ===========================
 " ==== Markdown Settings ====
 " ===========================
-"source $HOME/.config/nvim/snippits.vim
-"source $HOME/.config/nvim/cursor.vim
+"autocmd Filetype markdown map <leader>w yiWi[<esc>Ea](<esc>pa)
+autocmd Filetype markdown inoremap <buffer> ;f <Esc>/<++><CR>:nohlsearch<CR>"_c4l
+autocmd Filetype markdown inoremap <buffer> ;w <Esc>/ <++><CR>:nohlsearch<CR>"_c5l<CR>
+autocmd Filetype markdown inoremap <buffer> ;n ---<Enter><Enter>
+autocmd Filetype markdown inoremap <buffer> ;b **** <++><Esc>F*hi
+autocmd Filetype markdown inoremap <buffer> ;s ~~~~ <++><Esc>F~hi
+autocmd Filetype markdown inoremap <buffer> ;i ** <++><Esc>F*i
+autocmd Filetype markdown inoremap <buffer> ;d `` <++><Esc>F`i
+autocmd Filetype markdown inoremap <buffer> ;c ```<Enter><++><Enter>```<Enter><Enter><++><Esc>4kA
+autocmd Filetype markdown inoremap <buffer> ;h ====<Space><++><Esc>F=hi
+autocmd Filetype markdown inoremap <buffer> ;m - [ ] 
+autocmd Filetype markdown inoremap <buffer> ;p ![](<++>) <++><Esc>F[a
+autocmd Filetype markdown inoremap <buffer> ;a [](<++>) <++><Esc>F[a
+autocmd Filetype markdown inoremap <buffer> ;1 #<Space><Enter><++><Esc>kA
+autocmd Filetype markdown inoremap <buffer> ;2 ##<Space><Enter><++><Esc>kA
+autocmd Filetype markdown inoremap <buffer> ;3 ###<Space><Enter><++><Esc>kA
+autocmd Filetype markdown inoremap <buffer> ;4 ####<Space><Enter><++><Esc>kA
+autocmd Filetype markdown inoremap <buffer> ;5 #####<Space><Enter><++><Esc>kA
+autocmd Filetype markdown inoremap <buffer> ;6 ######<Space><Enter><++><Esc>kA
+autocmd Filetype markdown inoremap <buffer> ;l --------<Enter>
+"autocmd Filetype markdown inoremap <buffer> | |<A-w>
 
 " ==== Compile function ====
-noremap <F5> :call CompileRunGcc()<CR>
+noremap <A-r> :call CompileRunGcc()<CR><C-w>k
 func! CompileRunGcc()
 	exec "w"
-	if &filetype == 'c'
+    	if &filetype == 'c'
 		set splitbelow
 		:sp
-		:res -15
-		term gcc -ansi -Wall % -o %< && %<
+		:res -10
+		:term gcc % -o %< && time ./%<
 	elseif &filetype == 'cpp'
 		set splitbelow
-		exec "!g++ -std=c++11 % -Wall -o && %<"
 		:sp
-		:res -15
-		:term %<
+		:res -10
+		:term g++ % -o %< && time ./%<
+    elseif &filetype == 'sh'
+        :!time bash %
     elseif &filetype == 'python'
-        :split
-        :term %
-    elseif &filetype == 'markdown'
-		exec "MarkdownPreview"
+        set splitbelow
+        :sp
+		:res -10
+        :term python3 %
     elseif &filetype == 'html'
 		silent! exec "!".g:mkdp_browser." % &"
+    elseif &filetype == 'markdown'
+		exec "MarkdownPreviewToggle"
+    endif
+endfunc
+
+
+noremap <C-A-n> :call MyCodeRunner()<CR><C-w>k
+func! MyCodeRunner()
+	exec "w"
+    	if &filetype == 'c'
+        :sall
+		set splitbelow
+		:sp
+		:res -10
+		:term gcc % -o %< && time ./%<
+	elseif &filetype == 'cpp'
+        :sall
+		set splitbelow
+		:sp
+		:res -10
+		:term g++ % -o %< && time ./%<
+    elseif &filetype == 'python'
+        :sall
+        set splitbelow
+        :sp
+		:res -10
+        :term python3 %
     endif
 endfunc
 
@@ -241,11 +289,13 @@ endfunc
 call plug#begin('~/.config/nvim/plugged')
 
 " Debugger
-"Plug 'puremourning/vimspector', {'do': './install_gadget.py --enable-c --enable-python --enable-go'}
+Plug 'puremourning/vimspector', {'do': './install_gadget.py --enable-c --enable-python'}
+"--enable-go
 
 " highlight
 "Plug 'cateduo/vsdark.nvim'
 "Plug 'theniceboy/nvim-deus'
+Plug 'jackguo380/vim-lsp-cxx-highlight'
 Plug 'joshdick/onedark.vim'
 
 " If you want to have icons in your statusline choose one of these
@@ -293,6 +343,9 @@ Plug 'junegunn/fzf', { 'do': { -> fzf#install() } }
 
 Plug 'junegunn/fzf.vim'
 
+Plug 'justinmk/vim-sneak'
+Plug 'easymotion/vim-easymotion'
+
 " lsp
 Plug 'neoclide/coc.nvim', {'branch': 'release'}
 Plug 'honza/vim-snippets'
@@ -312,18 +365,56 @@ call plug#end()
 color onedark
 
 
+" ==== jackguo380/vim-lsp-cxx-highlight ====
+"hi default link LspCxxHlSymFunction cxxFunction
+"hi default link LspCxxHlSymFunctionParameter cxxParameter
+"hi default link LspCxxHlSymFileVariableStatic cxxFileVariableStatic
+"hi default link LspCxxHlSymStruct cxxStruct
+"hi default link LspCxxHlSymStructField cxxStructField
+"hi default link LspCxxHlSymFileTypeAlias cxxTypeAlias
+"hi default link LspCxxHlSymClassField cxxStructField
+"hi default link LspCxxHlSymEnum cxxEnum
+"hi default link LspCxxHlSymVariableExtern cxxFileVariableStatic
+"hi default link LspCxxHlSymVariable cxxVariable
+"hi default link LspCxxHlSymMacro cxxMacro
+"hi default link LspCxxHlSymEnumMember cxxEnumMember
+"hi default link LspCxxHlSymParameter cxxParameter
+"hi default link LspCxxHlSymClass cxxTypeAlias
+
+
 " ==== dashboard-nvim ====
 let g:mapleader="\<Space>"
 let g:dashboard_default_executive = 'fzf'
+let g:indentLine_fileTypeExclude = ['dashboard']
 nmap <Leader>ss :<C-u>SessionSave<CR>
 nmap <Leader>sl :<C-u>SessionLoad<CR>
-nnoremap <silent> <Leader>fh :DashboardFindHistory<CR>
-nnoremap <silent> <Leader>ff :DashboardFindFile<CR>
-nnoremap <silent> <Leader>tc :DashboardChangeColorscheme<CR>
-nnoremap <silent> <Leader>fw :DashboardFindWord<CR>
 nnoremap <silent> <Leader>fb :DashboardJumpMark<CR>
+nnoremap <silent> <Leader>tc :DashboardChangeColorscheme<CR>
+nnoremap <silent> <Leader>ff :DashboardFindFile<CR>
+nnoremap <silent> <Leader>fh :DashboardFindHistory<CR>
+nnoremap <silent> <Leader>fw :DashboardFindWord<CR>
 nnoremap <silent> <Leader>cn :DashboardNewFile<CR>
 
+let g:dashboard_custom_header = [
+  \'               ▄▄██████████▄▄             ',
+  \'               ▀▀▀   ██   ▀▀▀             ',
+  \'       ▄██▄   ▄▄████████████▄▄   ▄██▄     ',
+  \'     ▄███▀  ▄████▀▀▀    ▀▀▀████▄  ▀███▄   ',
+  \'    ████▄ ▄███▀              ▀███▄ ▄████  ',
+  \'   ███▀█████▀▄████▄      ▄████▄▀█████▀███ ',
+  \'   ██▀  ███▀ ██████      ██████ ▀███  ▀██ ',
+  \'    ▀  ▄██▀  ▀████▀  ▄▄  ▀████▀  ▀██▄  ▀  ',
+  \'       ███           ▀▀           ███     ',
+  \'       ██████████████████████████████     ',
+  \'   ▄█  ▀██  ███   ██    ██   ███  ██▀  █▄ ',
+  \'   ███  ███ ███   ██    ██   ███▄███  ███ ',
+  \'   ▀██▄████████   ██    ██   ████████▄██▀ ',
+  \'    ▀███▀ ▀████   ██    ██   ████▀ ▀███▀  ',
+  \'     ▀███▄  ▀███████    ███████▀  ▄███▀   ',
+  \'       ▀███    ▀▀██████████▀▀▀   ███▀     ',
+  \'         ▀    ▄▄▄    ██    ▄▄▄    ▀       ',
+  \'               ▀████████████▀             ',
+\]
 
 
 " ==== VimWiki ====
@@ -371,14 +462,6 @@ map <LEADER>tm :TableModeToggle<CR>
 
 " ==== Python-syntax ====
 let g:python_highlight_all = 1
-
-"" ==== vim-indent-guide ====
-"let g:indent_guides_guide_size = 1
-"let g:indent_guides_start_level = 2
-"let g:indent_guides_enable_on_vim_startup = 1
-"let g:indent_guides_color_change_percent = 1
-"silent! unmap <LEADER>ig
-"autocmd WinEnter * silent! unmap <LEADER>ig
 
 " ==== Goyo ====
 map <LEADER>gy :Goyo<CR>
@@ -452,8 +535,8 @@ noremap <leader>; :History:<CR>
 "let g:VM_default_mappings = 0
 let g:VM_leader                     = {'default': ',', 'visual': ',', 'buffer': ','}
 let g:VM_maps                       = {}
-"let g:VM_maps['i']                  = ''
-"let g:VM_maps['I']                  = ''
+let g:VM_maps['i']                  = ''
+let g:VM_maps['I']                  = ''
 let g:VM_maps['Find Under']         = '<C-d>'
 let g:VM_maps['Find Subword Under'] = '<C-d>'
 let g:VM_maps['Find Next']          = ''
@@ -466,7 +549,7 @@ let g:VM_maps["Undo"]               = 'u'
 let g:VM_maps["Redo"]               = 'U'
 
 " ==== Far.vim ====
-noremap <LEADER>f :F  **/*<left><left><left><left><left>
+noremap <LEADER>ff :F  **/*<left><left><left><left><left>
 let g:far#mapping = {
 		\ "replace_undo" : ["u"],
 		\ }
@@ -478,9 +561,9 @@ let g:gitgutter_sign_allow_clobber = 0
 let g:gitgutter_map_keys = 0
 let g:gitgutter_override_sign_column_highlight = 0
 let g:gitgutter_preview_win_floating = 1
-let g:gitgutter_sign_added = '+' "▎
-let g:gitgutter_sign_modified = '?' "░
-let g:gitgutter_sign_removed = '-' "▏
+let g:gitgutter_sign_added = '' "▎
+let g:gitgutter_sign_modified = '柳' "░
+let g:gitgutter_sign_removed = '' "▏
 let g:gitgutter_sign_removed_first_line = '▔'
 let g:gitgutter_sign_modified_removed = '▒'
 nnoremap <LEADER>gf :GitGutterFold<CR>
@@ -696,8 +779,8 @@ ins_right {
 
 ins_right {
   'diff',
-  -- Is it me or the symbol for modified us really weird
-  symbols = { added = ' ', modified = '柳 ', removed = ' ' },
+  -- Is it me or the symbol for modified us really weird改
+  symbols = { added = ' ', modified = '柳', removed = ' ' },
   diff_color = {
     added = { fg = colors.green },
     modified = { fg = colors.orange },
@@ -717,6 +800,22 @@ ins_right {
 -- Now don't forget to initialize lualine
 lualine.setup(config)
 END
+
+
+" ==== vim-sneak ====
+map f <Plug>Sneak_f
+map F <Plug>Sneak_F
+map t <Plug>Sneak_t
+map T <Plug>Sneak_T
+map s <Plug>Sneak_s
+map S <Plug>Sneak_S
+let g:sneak#use_ic_scs = 1
+highlight link sneak None
+
+
+" ==== vim-easymotion ====
+let g:EasyMotion_smartcase = 1
+let g:EasyMotion_use_smartsign_us = 1
 
 
 " ==== coc.nvim ====
@@ -859,20 +958,38 @@ command! -nargs=0 Gcmake :call s:generate_compile_commands()
 " ==== vimspector ====
 let g:vimspector_enable_mappings = 'HUMAN'
 function! s:read_template_into_buffer(template)
-   "" has to be a function to avoid the extra space fzf#run insers otherwise
-   "execute '0r ~/AppData/Local/nvim/sample_vimspector_json/'.a:template
+	" has to be a function to avoid the extra space fzf#run insers otherwise
+	execute '0r ~/.config/nvim/sample_vimspector_json/'.a:template
 endfunction
 command! -bang -nargs=* LoadVimSpectorJsonTemplate call fzf#run({
-   		"\   'source': 'ls -1 ~/AppData/Local/nvim/sample_vimspector_json',
-   		"\   'down': 20,
-   		"\   'sink': function('<sid>read_template_into_buffer')
-   		"\ })
+			\   'source': 'ls -1 ~/.config/nvim/sample_vimspector_json',
+			\   'down': 20,
+			\   'sink': function('<sid>read_template_into_buffer')
+			\ })
 " noremap <leader>vs :tabe .vimspector.json<CR>:LoadVimSpectorJsonTemplate<CR>
-sign define vimspectorBP text=☛ texthl=Normal
+"sign define vimspectorBP text=☛ texthl=Normal
 sign define vimspectorBPDisabled text=☞ texthl=Normal
-sign define vimspectorPC text=🔶 texthl=SpellBad
+"sign define vimspectorPC text=🔶 texthl=SpellBad
 
 
+" ==== puremourning/vimspector ====
+"let g:vimspector_enable_mappings = 'HUMAN'
+
+"function! s:generate_vimspector_conf()
+  "if empty(glob( '.vimspector.json' ))
+    "if &filetype == 'c' || 'cpp' 
+      "!cp ~/.config/nvim/vimspector_conf/c.json ./.vimspector.json
+    "elseif &filetype == 'python'
+      "!cp ~/.config/nvim/vimspector_conf/python.json ./.vimspector.json
+    "endif
+  "endif
+  "e .vimspector.json
+"endfunction
+
+"command! -nargs=0 Gvimspector :call s:generate_vimspector_conf()
+
+"nmap <Leader>v <Plug>VimspectorBalloonEval
+"xmap <Leader>v <Plug>vimspectorBalloonEval
 
 
 

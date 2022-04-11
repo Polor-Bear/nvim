@@ -1,0 +1,22 @@
+{
+	"configurations": {
+		"launch": {
+			"adapter": "CodeLLDB",
+			"configuration": {
+				"request": "launch",
+				"program": "${file}",
+				"cwd": "${workspaceFolder}",
+                "args": [],
+                "enviroment" :[],
+                "externalConsole":true,
+                "MIMode": "lldb"
+			},
+			"breakpoints": {
+				"exception": {
+					"raised": "N",
+					"uncaught": ""
+				}
+			}
+		}
+	}
+}
