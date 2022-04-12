@@ -83,16 +83,14 @@ inoremap <C-y> <C-t>
 noremap n =
 
 " set <Alt> + hjkl
-"inoremap <A-h> <Esc>ha
-"inoremap <A-j> <Esc>ja
-"inoremap <A-k> <Esc>ka
-"inoremap <A-l> <Esc>la
-"inoremap <A-w> <Esc>wa
-"inoremap <A-b> <Esc>ba
+inoremap <A-h> <Esc>ha
+inoremap <A-j> <Esc>ja
+inoremap <A-k> <Esc>ka
+inoremap <A-l> <Esc>la
+inoremap <A-w> <Esc>wa
+inoremap <A-b> <Esc>ba
 noremap <A-o> <A-o><Esc>
 noremap <A-O> <A-O><Esc>
-noremap <CR> bve
-
 
 " Save & Quit
 noremap Q :q<CR>
@@ -189,7 +187,7 @@ noremap tU :tabe split<CR>
 " Move around tabs with tn an ti
 noremap th :-tabnext<CR>
 noremap tl :+tabnext<CR>
-" Move the tabs with tmn and tmi
+" Move the tabs with tmh and tml
 noremap tmh :-tabmove<CR>
 noremap tml :+tabmove<CR>
 
@@ -198,9 +196,10 @@ noremap tml :+tabmove<CR>
 " ============================
 " Spelling Check with <space>sc
 noremap <LEADER>sc :set spell!<CR>
-noremap <C-.> ea<C-x>s
-inoremap <C-.> <Esc>a<C-x>s
+noremap <C-'> ea<C-x>s
+inoremap <C-'> <Esc>a<C-x>s
 noremap gb evb
+noremap <C-n> K
 
 " Press space twice to jump to the next '<++>' and edit it
 "noremap <LEADER><LEADER> <Esc>/<++><CR>:nohlsearch<CR>c4l
@@ -319,25 +318,19 @@ Plug 'mbbill/undotree'
 
 Plug 'majutsushi/tagbar'
 
-Plug 'w0rp/ale'
-
 Plug 'junegunn/goyo.vim'
 
 Plug 'vim-python/python-syntax'
 
-"Plug 'nathanaelkane/vim-indent-guides'
 Plug 'Yggdroot/indentLine'
 
 Plug 'kshenoy/vim-signature'
 
 Plug 'vim-scripts/The-NERD-Commenter'
 
-Plug 'tpope/vim-surround'
-
 Plug 'tmhedberg/SimpylFold'
 
 Plug 'hardcoreplayers/dashboard-nvim'
-"Plug 'mhinz/vim-startify'
 
 Plug 'junegunn/fzf', { 'do': { -> fzf#install() } }
 
@@ -421,11 +414,7 @@ let g:dashboard_custom_header = [
 let g:vimwiki_list = [{'path': '~/vimwiki/',
                       \ 'syntax': 'markdown', 'ext': '.md'}]
 
-" ==== ale ====
-let b:ale_linters = [ 'pylint']
-let b:ale_fixers = ['autopep8', 'yapf']
-
-" ==== Taglist ====
+" ==== Tagbar ====
 map <silent> T :TagbarOpenAutoClose<CR>
 
 "" ==== MarkdownPreview ====
@@ -506,8 +495,9 @@ function g:Undotree_CustomMap()
 	nmap <buffer> J 5<plug>UndotreePreviousState
 endfunc
 
-" ==== simpy|Fold ====
+" ==== simpylFold ====
 let g:SimpylFold_docstring_preview = 1
+noremap <LEADER>o za
 
 " ==== FZF ====
 nnoremap <c-p> :FZF<CR>
@@ -518,17 +508,6 @@ noremap <silent> <C-h> :History<CR>
 " noremap <silent> <C-l> :Lines<CR>
 noremap <silent> <C-w> :Buffers<CR>
 noremap <leader>; :History:<CR>
-
-"" ==== vim-multiple-cursor ====
-"let g:multi_cursor_use_default_mapping = 0
-"let g:multi_cursor_start_word_key = '<c-k>'
-"let g:multi_cursor_select_all_word_key = '<a-k>'
-"let g:multi_cursor_start_key = 'g<c-k>'
-"let g:multi_cursor_select_all_key = 'g<a-k>'
-"let g:multi_cursor_next_key = '<c-k>'
-"let g:multi_cursor_prev_key = '<c-p>'
-"let g:multi_cursor_skip_key = '<C-s>'
-"let g:multi_cursor_quit_key = '<Esc>'
 
 " ==================== vim-visual-multi ====================
 "let g:VM_theme             = 'iceblue'
@@ -575,6 +554,10 @@ nnoremap g= :GitGutterNextHunk<CR>
 noremap \g :Git
 noremap <C-g> :tabe<CR>:-tabmove<CR>:term lazygit<CR>
 "nnoremap <C-n> :tabe<CR>:-tabmove<CR>:term lazynpm<CR>
+
+
+" ==== wildfire.vim ====
+map <LEADER>wf <Plug>(wildfire-quick-select)
 
 
 lua << END
@@ -806,7 +789,7 @@ END
 map f <Plug>Sneak_f
 map F <Plug>Sneak_F
 map t <Plug>Sneak_t
-map T <Plug>Sneak_T
+"map T <Plug>Sneak_T
 map s <Plug>Sneak_s
 map S <Plug>Sneak_S
 let g:sneak#use_ic_scs = 1
@@ -902,12 +885,12 @@ if has('nvim-0.4.0') || has('patch-8.2.0750')
 endif
 
 " Text Objects
-xmap kf <Plug>(coc-funcobj-i)
+xmap if <Plug>(coc-funcobj-i)
 xmap af <Plug>(coc-funcobj-a)
-omap kf <Plug>(coc-funcobj-i)
+omap if <Plug>(coc-funcobj-i)
 omap af <Plug>(coc-funcobj-a)
-xmap kc <Plug>(coc-classobj-i)
-omap kc <Plug>(coc-classobj-i)
+xmap ic <Plug>(coc-classobj-i)
+omap ic <Plug>(coc-classobj-i)
 xmap ac <Plug>(coc-classobj-a)
 omap ac <Plug>(coc-classobj-a)
 " Useful commands
