@@ -83,10 +83,10 @@ inoremap <C-y> <C-t>
 noremap n =
 
 " set <Alt> + hjkl
-inoremap <A-h> <Esc>ha
-inoremap <A-j> <Esc>ja
-inoremap <A-k> <Esc>ka
-inoremap <A-l> <Esc>la
+"inoremap <A-h> <Esc>ha
+"inoremap <A-j> <Esc>ja
+"inoremap <A-k> <Esc>ka
+"inoremap <A-l> <Esc>la
 inoremap <A-w> <Esc>wa
 inoremap <A-b> <Esc>ba
 noremap <A-o> <A-o><Esc>
@@ -161,13 +161,13 @@ noremap <LEADER>sh :set nosplitright<CR>:vsplit<CR>
 noremap <LEADER>sl :set splitright<CR>:vsplit<CR>
 
 " Place the two screens up and down
-noremap sv <C-w>t<C-w>H
+noremap <LEADER>sv <C-w>t<C-w>H
 " Place the two screens side by side
-noremap sn <C-w>t<C-w>K
+noremap <LEADER>sn <C-w>t<C-w>K
 
 " Rotate screens
-noremap srv <C-w>b<C-w>H
-noremap srn <C-w>b<C-w>K
+noremap <LEADER>srv <C-w>b<C-w>H
+noremap <LEADER>srn <C-w>b<C-w>K
 
 " Press <SPACE> + q to close the window below the current window
 noremap <LEADER>q <C-w>j:q<CR>
@@ -196,8 +196,8 @@ noremap tml :+tabmove<CR>
 " ============================
 " Spelling Check with <space>sc
 noremap <LEADER>sc :set spell!<CR>
-noremap <C-'> ea<C-x>s
-inoremap <C-'> <Esc>a<C-x>s
+noremap <C-p> ea<C-x>s
+inoremap <C-p> <Esc>a<C-x>s
 noremap gb evb
 noremap <C-n> K
 
@@ -380,7 +380,7 @@ let g:mapleader="\<Space>"
 let g:dashboard_default_executive = 'fzf'
 let g:indentLine_fileTypeExclude = ['dashboard']
 nmap <Leader>ss :<C-u>SessionSave<CR>
-nmap <Leader>sl :<C-u>SessionLoad<CR>
+nmap <Leader>sL :<C-u>SessionLoad<CR>
 nnoremap <silent> <Leader>fb :DashboardJumpMark<CR>
 nnoremap <silent> <Leader>tc :DashboardChangeColorscheme<CR>
 nnoremap <silent> <Leader>ff :DashboardFindFile<CR>
@@ -521,7 +521,7 @@ let g:VM_maps['Find Subword Under'] = '<C-d>'
 let g:VM_maps['Find Next']          = ''
 let g:VM_maps['Find Prev']          = ''
 let g:VM_maps['Select Cursor Down'] = '<A-J>'
-let g:VM_maps['Select Cursor up']   = '<A-K>'
+let g:VM_maps['Select Cursor Up']   = '<A-K>'
 let g:VM_maps['Remove Region']      = 'q'
 let g:VM_maps['Skip Region']        = '<c-n>'
 let g:VM_maps["Undo"]               = 'u'
