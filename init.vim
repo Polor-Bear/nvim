@@ -24,7 +24,7 @@ let g:ruby_host_prog='$/home/bear/.local/share/gem/ruby/3.0.0'
 " ==== Editor Behavior ====
 " =========================
 set number
-set relativenumber
+"set relativenumber
 set cursorline
 set wrap
 set showcmd
@@ -43,12 +43,11 @@ set indentexpr=
 set backspace=indent,eol,start
 set foldmethod=indent
 set foldlevel=99
-"let &t_SI = "\<Esc>]50;CursorShape=1\x7"
-"let &t_SR = "\<Esc>]50;CursorShape=2\x7"
-"let &t_EI = "\<Esc>]50;CursorShape=0\x7"
+set foldenable
 set laststatus=2
 set autochdir
 au BufReadPost * if line("'\"") > 1 && line("'\"") <= line("$") | exe "normal! g'\"" | endif
+let g:mkdp_browser = 'chromium'
 
 silent !mkdir -p $HOME/.config/nvim/tmp/backup
 silent !mkdir -p $HOME/.config/nvim/tmp/undo
@@ -59,6 +58,29 @@ if has('persistent_undo')
 	set undofile
 	set undodir=$HOME/.config/nvim/tmp/undo,.
 endif
+
+" ==================== Terminal Behaviors ====================
+let g:neoterm_autoscroll = 1
+autocmd TermOpen term://* startinsert
+tnoremap <C-N> <C-\><C-N>
+tnoremap <C-O> <C-\><C-N><C-O>
+
+" ==================== Terminal Colors ====================
+let g:terminal_color_0  = '#000000'
+let g:terminal_color_1  = '#FF5555'
+let g:terminal_color_2  = '#50FA7B'
+let g:terminal_color_3  = '#F1FA8C'
+let g:terminal_color_4  = '#BD93F9'
+let g:terminal_color_5  = '#FF79C6'
+let g:terminal_color_6  = '#8BE9FD'
+let g:terminal_color_7  = '#BFBFBF'
+let g:terminal_color_8  = '#4D4D4D'
+let g:terminal_color_9  = '#FF6E67'
+let g:terminal_color_10 = '#5AF78E'
+let g:terminal_color_11 = '#F4F99D'
+let g:terminal_color_12 = '#CAA9FA'
+let g:terminal_color_13 = '#FF92D0'
+let g:terminal_color_14 = '#9AEDFE'
 
 " ========================
 " ==== Basic Mappings ====
@@ -83,10 +105,10 @@ inoremap <C-y> <C-t>
 noremap n =
 
 " set <Alt> + hjkl
-"inoremap <A-h> <Esc>ha
+inoremap <A-h> <Esc>ha
 "inoremap <A-j> <Esc>ja
 "inoremap <A-k> <Esc>ka
-"inoremap <A-l> <Esc>la
+inoremap <A-l> <Esc>la
 inoremap <A-w> <Esc>wa
 inoremap <A-b> <Esc>ba
 noremap <A-o> <A-o><Esc>
@@ -109,6 +131,8 @@ nnoremap Y y$
 
 " Copy to system clipboard
 vnoremap Y "+y
+nnoremap <A-p> "+p
+vnoremap <A-p> "+p
 
 " Indentation
 nnoremap < <<
@@ -134,6 +158,10 @@ noremap <C-j> 5<C-e>
 " Adjacent duplicate words
 noremap <LEADER>fd /\(\<\w\+\>\)\_s*\1<CR>
 
+" Space to Tab
+nnoremap <LEADER>tt :%s/	/\t/g
+vnoremap <LEADER>tt :s/	/\t/g
+
 " Ctrl + z will Undo operation
 noremap <C-z> <nop>
 inoremap <C-z> <Esc>ua
@@ -151,8 +179,8 @@ noremap <LEADER>k <C-w>k
 noremap <LEADER>l <C-w>l
 noremap qf <C-w>o
 
-" Disable the default s key
-"noremap s <nop>
+" fold
+noremap <LEADER>o za
 
 " split the screens to up (horizontal), down(horizontal), left(vertical), right<vertical)
 noremap <LEADER>sk :set nosplitbelow<CR>:split<CR>
@@ -173,10 +201,10 @@ noremap <LEADER>srn <C-w>b<C-w>K
 noremap <LEADER>q <C-w>j:q<CR>
 
 " Resize splits with arrow keys
-noremap <up> :res +5<CR>
-noremap <down> :res -5<CR>
-noremap <left> :vertical resize +5<CR>
-noremap <right> :vertical resize -5<CR>
+noremap <up> :res +1<CR>
+noremap <down> :res -1<CR>
+noremap <left> :vertical resize +1<CR>
+noremap <right> :vertical resize -1<CR>
 
 " ========================
 " ==== Tab management ====
@@ -187,6 +215,8 @@ noremap tU :tabe split<CR>
 " Move around tabs with tn an ti
 noremap th :-tabnext<CR>
 noremap tl :+tabnext<CR>
+noremap <C-A-h> :-tabnext<CR>
+noremap <C-A-l> :+tabnext<CR>
 " Move the tabs with tmh and tml
 noremap tmh :-tabmove<CR>
 noremap tml :+tabmove<CR>
@@ -229,11 +259,33 @@ autocmd Filetype markdown inoremap <buffer> ;6 ######<Space><Enter><++><Esc>kA
 autocmd Filetype markdown inoremap <buffer> ;l --------<Enter>
 "autocmd Filetype markdown inoremap <buffer> | |<A-w>
 
+" Open a new instance of st with the cwd
+nnoremap \t :tabe<CR>:-tabmove<CR>:term sh -c 'st'<CR><C-\><C-N>:q<CR>
+" Opening a terminal window
+noremap <LEADER>/ :set splitbelow<CR>:split<CR>:res +10<CR>:term<CR>
+" Press ` to change case (instead of ~)
+noremap ` ~
+noremap <C-c> zz
+" Auto change directory to current dir
+autocmd BufEnter * silent! lcd %:p:h
+" Call figlet
+noremap tx :r !figlet 
+" find and replace
+noremap \s :%s//g<left><left>
+" set wrap
+noremap <LEADER>sw :set wrap<CR>
+" press f10 to show hlgroup
+" function! SynGroup()
+" 	let l:s = synID(line('.'), col('.'), 1)
+" 	echo synIDattr(l:s, 'name') . ' -> ' . synIDattr(synIDtrans(l:s), 'name')
+" endfun
+" map <F10> :call SynGroup()<CR>
+
 " ==== Compile function ====
-noremap <A-r> :call CompileRunGcc()<CR><C-w>k
+noremap <A-r> :call CompileRunGcc()<CR>
 func! CompileRunGcc()
 	exec "w"
-    	if &filetype == 'c'
+		if &filetype == 'c'
 		set splitbelow
 		:sp
 		:res -10
@@ -243,43 +295,45 @@ func! CompileRunGcc()
 		:sp
 		:res -10
 		:term g++ % -o %< && time ./%<
-    elseif &filetype == 'sh'
-        :!time bash %
-    elseif &filetype == 'python'
-        set splitbelow
-        :sp
+	elseif &filetype == 'sh'
+		:!time bash %
+	elseif &filetype == 'python'
+		set splitbelow
+		:sp
 		:res -10
-        :term python3 %
-    elseif &filetype == 'html'
+		:term python3 %
+	elseif &filetype == 'html'
 		silent! exec "!".g:mkdp_browser." % &"
-    elseif &filetype == 'markdown'
-		exec "MarkdownPreviewToggle"
-    endif
+	elseif &filetype == 'markdown'
+		exec "InstantMarkdownPreview"
+	elseif &filetype == 'vimwiki'
+		exec "InstantMarkdownPreview"
+	endif
 endfunc
 
 
 noremap <C-A-n> :call MyCodeRunner()<CR><C-w>k
 func! MyCodeRunner()
 	exec "w"
-    	if &filetype == 'c'
-        :sall
+	if &filetype == 'c'
+		:sall
 		set splitbelow
 		:sp
 		:res -10
 		:term gcc % -o %< && time ./%<
 	elseif &filetype == 'cpp'
-        :sall
+		:sall
 		set splitbelow
 		:sp
 		:res -10
 		:term g++ % -o %< && time ./%<
-    elseif &filetype == 'python'
-        :sall
-        set splitbelow
-        :sp
+	elseif &filetype == 'python'
+		:sall
+		set splitbelow
+		:sp
 		:res -10
-        :term python3 %
-    endif
+		:term python3 %
+	endif
 endfunc
 
 " =========================
@@ -287,98 +341,173 @@ endfunc
 " =========================
 call plug#begin('~/.config/nvim/plugged')
 
+" Treesitter
+Plug 'nvim-treesitter/nvim-treesitter'
+Plug 'nvim-treesitter/playground'
+
+" General Highlighter
+Plug 'RRethy/vim-hexokinase', { 'do': 'make hexokinase' }
+Plug 'RRethy/vim-illuminate'
+
 " Debugger
 Plug 'puremourning/vimspector', {'do': './install_gadget.py --enable-c --enable-python'}
 "--enable-go
 
 " highlight
 "Plug 'cateduo/vsdark.nvim'
-"Plug 'theniceboy/nvim-deus'
-Plug 'jackguo380/vim-lsp-cxx-highlight'
 Plug 'joshdick/onedark.vim'
 
 " If you want to have icons in your statusline choose one of these
 Plug 'nvim-lualine/lualine.nvim'
+Plug 'luochen1990/rainbow'
 Plug 'kyazdani42/nvim-web-devicons'
 "Plug 'vim-airline/vim-airline'
 "Plug 'theniceboy/eleline.vim'
 
-" Git
-Plug 'airblade/vim-gitgutter'
-
-Plug 'iamcco/markdown-preview.nvim'
-Plug 'dhruvasagar/vim-table-mode'
-
+" Markdown
 Plug 'vimwiki/vimwiki'
+Plug 'dhruvasagar/vim-table-mode'
+Plug 'suan/vim-instant-markdown', {'for': 'markdown'}
+Plug 'mzlogin/vim-markdown-toc', { 'for': ['gitignore', 'markdown', 'vim-plug'] }
+Plug 'dkarter/bullets.vim'
 
-"Plug 'preservim/nerdtree'
-"Plug 'preservim/nerdtree' |
-            "\ Plug 'Xuyuanp/nerdtree-git-plugin'
+" Editor Enhancement
+Plug 'petertriho/nvim-scrollbar'
+Plug 'kevinhwang91/nvim-hlslens'
+
 Plug 'mbbill/undotree'
 
 Plug 'majutsushi/tagbar'
 
 Plug 'junegunn/goyo.vim'
-
-Plug 'vim-python/python-syntax'
+"Plug 'ron89/thesaurus_query.vim'
 
 Plug 'Yggdroot/indentLine'
 
 Plug 'kshenoy/vim-signature'
 
-Plug 'vim-scripts/The-NERD-Commenter'
 
-Plug 'tmhedberg/SimpylFold'
+" Plug 'tmhedberg/SimpylFold'
 
 Plug 'hardcoreplayers/dashboard-nvim'
 
+" File navigation
 Plug 'junegunn/fzf', { 'do': { -> fzf#install() } }
-
 Plug 'junegunn/fzf.vim'
+Plug 'ibhagwan/fzf-lua'
+Plug 'kevinhwang91/rnvimr'
+
+" Git
+Plug 'airblade/vim-gitgutter'
+Plug 'theniceboy/vim-gitignore', { 'for': ['gitignore', 'vim-plug'] }
+Plug 'theniceboy/fzf-gitignore', { 'do': ':UpdateRemotePlugins' }
+
+" HTML, CSS, JavaScript, Typescript, PHP, JSON, etc.
+Plug 'alvan/vim-closetag'
 
 Plug 'justinmk/vim-sneak'
 Plug 'easymotion/vim-easymotion'
+Plug 'ggandor/lightspeed.nvim'
+Plug 'jiangmiao/auto-pairs'
+Plug 'mg979/vim-visual-multi'
+Plug 'b3nj5m1n/kommentary'
+Plug 'theniceboy/antovim' " gs to switch
+Plug 'tpope/vim-surround'
+Plug 'gcmt/wildfire.vim'
+Plug 'godlygeek/tabular' " ga, or :Tabularize <regex> to align
+Plug 'junegunn/vim-peekaboo'
 
-" lsp
+" Auto Complete
 Plug 'neoclide/coc.nvim', {'branch': 'release'}
 Plug 'honza/vim-snippets'
 
-Plug 'tpope/vim-surround'
-Plug 'gcmt/wildfire.vim'
-Plug 'mg979/vim-visual-multi'
+" Python
+Plug 'vim-python/python-syntax'
+Plug 'numirias/semshi', { 'do': ':UpdateRemotePlugins' }
+Plug 'tweekmonster/braceless.vim', { 'for' :['python', 'vim-plug'] }
+
 
 call plug#end()
 " ==================================== plugins end =================================
 
 " ==== cateduo/vsdark.nvim ====
 
-"set termguicolors
-"let g:vsdark_style = "dark"
-"color deus
+" onedark.vim override: Don't set a background color when running in a terminal;
+" just use the terminal's background color
+" `gui` is the hex color code used in GUI mode/nvim true-color mode
+" `cterm` is the color code used in 256-color mode
+" `cterm16` is the color code used in 16-color mode
+if (has("autocmd") && !has("gui_running"))
+  augroup colorset
+	autocmd!
+	let s:white = { "gui": "#abb2bf", "cterm": "145", "cterm16" : "7" }
+	autocmd colorscheme * call onedark#set_highlight("normal", { "fg": s:white }) " `bg` will not be styled since there is no `bg` setting
+  augroup end
+endif
 color onedark
 
+" ==================== vim-illuminate ====================
+let g:illuminate_delay = 50
+hi illuminatedword cterm=undercurl gui=undercurl
 
-" ==== jackguo380/vim-lsp-cxx-highlight ====
-"hi default link LspCxxHlSymFunction cxxFunction
-"hi default link LspCxxHlSymFunctionParameter cxxParameter
-"hi default link LspCxxHlSymFileVariableStatic cxxFileVariableStatic
-"hi default link LspCxxHlSymStruct cxxStruct
-"hi default link LspCxxHlSymStructField cxxStructField
-"hi default link LspCxxHlSymFileTypeAlias cxxTypeAlias
-"hi default link LspCxxHlSymClassField cxxStructField
-"hi default link LspCxxHlSymEnum cxxEnum
-"hi default link LspCxxHlSymVariableExtern cxxFileVariableStatic
-"hi default link LspCxxHlSymVariable cxxVariable
-"hi default link LspCxxHlSymMacro cxxMacro
-"hi default link LspCxxHlSymEnumMember cxxEnumMember
-"hi default link LspCxxHlSymParameter cxxParameter
-"hi default link LspCxxHlSymClass cxxTypeAlias
+" ==================== nvim-treesitter ====================
+lua <<EOF
+require'nvim-treesitter.configs'.setup {
+	-- one of "all", "language", or a list of languages
+	highlight = {
+		enable = true,			  -- false will disable the whole extension
+		disable = { "rust" },  -- list of language that will be disabled
+	},
+	ensure_installed = {
+		"c",
+		"cpp",
+		"dart",
+		"java",
+		"json",
+		"html",
+		"bash",
+		"regex",
+		"prisma",
+		"typescript"},
+}
+EOF
 
+" ==================== nvim-scrollbar ====================
+lua <<EOF
+require("scrollbar").setup()
+require("scrollbar.handlers.search").setup()
+require("scrollbar").setup({
+	show = true,
+	handle = {
+		text = " ",
+		color = "#928374",
+		hide_if_all_visible = true,
+	},
+	marks = {
+		Search = { color = "yellow" },
+		Misc = { color = "purple" },
+	},
+	handlers = {
+		diagnostic = true,
+		search = true,
+	},
+})
+EOF
+
+" ==================== nvim-hlslens ====================
+noremap <silent> = <Cmd>execute('normal! ' . v:count1 . 'n')<CR>
+            \<Cmd>lua require('hlslens').start()<CR>
+noremap <silent> - <Cmd>execute('normal! ' . v:count1 . 'N')<CR>
+            \<Cmd>lua require('hlslens').start()<CR>
+noremap * *<Cmd>lua require('hlslens').start()<CR>
+noremap # #<Cmd>lua require('hlslens').start()<CR>
+noremap g* g*<Cmd>lua require('hlslens').start()<CR>
+noremap g# g#<Cmd>lua require('hlslens').start()<CR>
 
 " ==== dashboard-nvim ====
 let g:mapleader="\<Space>"
 let g:dashboard_default_executive = 'fzf'
-let g:indentLine_fileTypeExclude = ['dashboard']
+let g:indentLine_fileTypeExclude = ['dashboard', 'rnvimr']
 nmap <Leader>ss :<C-u>SessionSave<CR>
 nmap <Leader>sL :<C-u>SessionLoad<CR>
 nnoremap <silent> <Leader>fb :DashboardJumpMark<CR>
@@ -389,65 +518,64 @@ nnoremap <silent> <Leader>fw :DashboardFindWord<CR>
 nnoremap <silent> <Leader>cn :DashboardNewFile<CR>
 
 let g:dashboard_custom_header = [
-  \'               ▄▄██████████▄▄             ',
-  \'               ▀▀▀   ██   ▀▀▀             ',
-  \'       ▄██▄   ▄▄████████████▄▄   ▄██▄     ',
-  \'     ▄███▀  ▄████▀▀▀    ▀▀▀████▄  ▀███▄   ',
-  \'    ████▄ ▄███▀              ▀███▄ ▄████  ',
-  \'   ███▀█████▀▄████▄      ▄████▄▀█████▀███ ',
-  \'   ██▀  ███▀ ██████      ██████ ▀███  ▀██ ',
-  \'    ▀  ▄██▀  ▀████▀  ▄▄  ▀████▀  ▀██▄  ▀  ',
-  \'       ███           ▀▀           ███     ',
-  \'       ██████████████████████████████     ',
-  \'   ▄█  ▀██  ███   ██    ██   ███  ██▀  █▄ ',
-  \'   ███  ███ ███   ██    ██   ███▄███  ███ ',
-  \'   ▀██▄████████   ██    ██   ████████▄██▀ ',
-  \'    ▀███▀ ▀████   ██    ██   ████▀ ▀███▀  ',
-  \'     ▀███▄  ▀███████    ███████▀  ▄███▀   ',
-  \'       ▀███    ▀▀██████████▀▀▀   ███▀     ',
-  \'         ▀    ▄▄▄    ██    ▄▄▄    ▀       ',
-  \'               ▀████████████▀             ',
+  \'			   ▄▄██████████▄▄			 ',
+  \'			   ▀▀▀   ██   ▀▀▀			 ',
+  \'	   ▄██▄   ▄▄████████████▄▄   ▄██▄	 ',
+  \'	 ▄███▀  ▄████▀▀▀	▀▀▀████▄  ▀███▄   ',
+  \'	████▄ ▄███▀			  ▀███▄ ▄████  ',
+  \'   ███▀█████▀▄████▄	  ▄████▄▀█████▀███ ',
+  \'   ██▀  ███▀ ██████	  ██████ ▀███  ▀██ ',
+  \'	▀  ▄██▀  ▀████▀  ▄▄  ▀████▀  ▀██▄  ▀  ',
+  \'	   ███		   ▀▀		   ███	 ',
+  \'	   ██████████████████████████████	 ',
+  \'   ▄█  ▀██  ███   ██	██   ███  ██▀  █▄ ',
+  \'   ███  ███ ███   ██	██   ███▄███  ███ ',
+  \'   ▀██▄████████   ██	██   ████████▄██▀ ',
+  \'	▀███▀ ▀████   ██	██   ████▀ ▀███▀  ',
+  \'	 ▀███▄  ▀███████	███████▀  ▄███▀   ',
+  \'	   ▀███	▀▀██████████▀▀▀   ███▀	 ',
+  \'		 ▀	▄▄▄	██	▄▄▄	▀	   ',
+  \'			   ▀████████████▀			 ',
 \]
 
 
 " ==== VimWiki ====
 let g:vimwiki_list = [{'path': '~/vimwiki/',
-                      \ 'syntax': 'markdown', 'ext': '.md'}]
+					  \ 'syntax': 'markdown', 'ext': '.md'}]
 
 " ==== Tagbar ====
 map <silent> T :TagbarOpenAutoClose<CR>
 
-"" ==== MarkdownPreview ====
-let g:mkdp_auto_start = 0
-let g:mkdp_auto_close = 1
-let g:mkdp_refresh_slow = 0
-let g:mkdp_command_for_global = 0
-let g:mkdp_open_to_the_world = 0
-let g:mkdp_open_ip = ''
-let g:mkdp_browser = 'chromium'
-let g:mkdp_echo_preview_url = 0
-let g:mkdp_browserfunc = ''
-let g:mkdp_preview_options = {
-    \ 'mkit': {},
-    \ 'katex': {},
-    \ 'uml': {},
-    \ 'maid': {},
-    \ 'disable_sync_scroll': 0,
-    \ 'sync_scroll_type': 'middle',
-    \ 'hide_yaml_meta': 1,
-    \ 'sequence_diagrams': {},
-    \ 'flowchart_diagrams': {},
-    \ 'content_editable': v:false,
-    \ 'disable_filename': 0
-    \ }
-let g:mkdp_markdown_css = ''
-let g:mkdp_highlight_css = ''
-let g:mkdp_port = ''
-let g:mkdp_page_title = '「${name}」'
-let g:mkdp_filetypes = ['markdown']
+" ==================== vim-instant-markdown ====================
+let g:instant_markdown_slow = 0
+let g:instant_markdown_autostart = 0
+"let g:instant_markdown_open_to_the_world = 1
+"let g:instant_markdown_allow_unsafe_content = 1
+" let g:instant_markdown_allow_external_content = 0
+"let g:instant_markdown_mermaid = 1
+let g:instant_markdown_mathjax = 1
+let g:instant_markdown_browser = "chromium --new-window"
+let g:instant_markdown_autoscroll = 1
 
 " ==== vim-table-mode ====
 map <LEADER>tm :TableModeToggle<CR>
+"let g:table_mode_disable_mappings = 1
+
+" ==================== vim-markdown-toc ====================
+"let g:vmt_auto_update_on_save = 0
+"let g:vmt_dont_insert_fence = 1
+let g:vmt_cycle_list_item_markers = 1
+let g:vmt_fence_text = 'TOC'
+let g:vmt_fence_closing_text = '/TOC'
+
+" ==================== Bullets.vim ====================
+let g:bullets_set_mappings = 0
+let g:bullets_enabled_file_types = [
+			\ 'markdown',
+			\ 'text',
+			\ 'gitcommit',
+			\ 'scratch'
+			\]
 
 " ==== Python-syntax ====
 let g:python_highlight_all = 1
@@ -455,34 +583,43 @@ let g:python_highlight_all = 1
 " ==== Goyo ====
 map <LEADER>gy :Goyo<CR>
 
+" ==== thesaurus ====
+map <LEADER>th :ThesaurusQueryLookupCurrentWord<CR>
+
+" ==================== tabular ====================
+vmap ga :Tabularize /
+
+" ==================== rainbow ====================
+let g:rainbow_active = 1
+
 " ==== vim-signature ====
 let g:SignatureMap = {
-        \ 'Leader'             :  "m",
-        \ 'PlaceNextMark'      :  "m,",
-        \ 'ToggleMarkAtLine'   :  "m.",
-        \ 'PurgeMarksAtLine'   :  "dm-",
-        \ 'DeleteMark'         :  "dm",
-        \ 'PurgeMarks'         :  "dm/",
-        \ 'PurgeMarkers'       :  "dm?",
-        \ 'GotoNextLineAlpha'  :  "m<LEADER>",
-        \ 'GotoPrevLineAlpha'  :  "",
-        \ 'GotoNextSpotAlpha'  :  "m<LEADER>",
-        \ 'GotoPrevSpotAlpha'  :  "",
-        \ 'GotoNextLineByPos'  :  "",
-        \ 'GotoPrevLineByPos'  :  "",
-        \ 'GotoNextSpotByPos'  :  "mn",
-        \ 'GotoPrevSpotByPos'  :  "mp",
-        \ 'GotoNextMarker'     :  "",
-        \ 'GotoPrevMarker'     :  "",
-        \ 'GotoNextMarkerAny'  :  "",
-        \ 'GotoPrevMarkerAny'  :  "",
-        \ 'ListLocalMarks'     :  "m/",
-        \ 'ListLocalMarkers'   :  "m?"
-        \ }
+		\ 'Leader'			 :  "m",
+		\ 'PlaceNextMark'	  :  "m,",
+		\ 'ToggleMarkAtLine'   :  "m.",
+		\ 'PurgeMarksAtLine'   :  "dm-",
+		\ 'DeleteMark'		 :  "dm",
+		\ 'PurgeMarks'		 :  "dm/",
+		\ 'PurgeMarkers'	   :  "dm?",
+		\ 'GotoNextLineAlpha'  :  "m<LEADER>",
+		\ 'GotoPrevLineAlpha'  :  "",
+		\ 'GotoNextSpotAlpha'  :  "m<LEADER>",
+		\ 'GotoPrevSpotAlpha'  :  "",
+		\ 'GotoNextLineByPos'  :  "",
+		\ 'GotoPrevLineByPos'  :  "",
+		\ 'GotoNextSpotByPos'  :  "mn",
+		\ 'GotoPrevSpotByPos'  :  "mp",
+		\ 'GotoNextMarker'	 :  "",
+		\ 'GotoPrevMarker'	 :  "",
+		\ 'GotoNextMarkerAny'  :  "",
+		\ 'GotoPrevMarkerAny'  :  "",
+		\ 'ListLocalMarks'	 :  "m/",
+		\ 'ListLocalMarkers'   :  "m?"
+		\ }
 
 " ==== Undotree ====
 noremap <A-U> :UndotreeToggle<CR>
-let g:undotree_DiffAutoOpen = 0
+let g:undotree_DiffAutoOpen = 1
 let g:undotree_SetFocusWhenToggle = 1
 let g:undotree_ShortIndicators = 1
 let g:undotree_WindowLayout = 2
@@ -495,44 +632,205 @@ function g:Undotree_CustomMap()
 	nmap <buffer> J 5<plug>UndotreePreviousState
 endfunc
 
-" ==== simpylFold ====
-let g:SimpylFold_docstring_preview = 1
-noremap <LEADER>o za
-
 " ==== FZF ====
-nnoremap <c-p> :FZF<CR>
-" noremap <silent> <C-p> :Files<CR>
+"nnoremap <c-p> :FZF<CR>
+"" noremap <silent> <C-p> :Files<CR>
+"noremap <silent> <C-f> :Rg<CR>
+"noremap <silent> <C-h> :History<CR>
+noremap <C-t> :BTags<CR>
+"" noremap <silent> <C-u> :Lines<CR>
+"noremap <silent> <C-w> :Buffers<CR>
+"noremap <leader>; :History:<CR>
+
+let g:fzf_preview_window = 'left:45%'
+let g:fzf_preview_window = 'right:60%'
+let g:fzf_commits_log_options = '--graph --color=always --format="%C(auto)%h%d %s %C(black)%C(bold)%cr"'
+
+function! s:list_buffers()
+  redir => list
+  silent ls
+  redir END
+  return split(list, "\n")
+endfunction
+
+function! s:delete_buffers(lines)
+  execute 'bwipeout' join(map(a:lines, {_, line -> split(line)[0]}))
+endfunction
+
+command! BD call fzf#run(fzf#wrap({
+  \ 'source': s:list_buffers(),
+  \ 'sink*': { lines -> s:delete_buffers(lines) },
+  \ 'options': '--multi --reverse --bind ctrl-a:select-all+accept'
+\ }))
+
+noremap <C-A-d> :BD<CR>
+
+let g:fzf_layout = { 'window': { 'width': 0.95, 'height': 0.95 } }
+
+
+" ==================== fzf-lua ====================
+noremap <silent> <C-p> :FzfLua files<CR>
 noremap <silent> <C-f> :Rg<CR>
-noremap <silent> <C-h> :History<CR>
-"noremap <C-t> :BTags<CR>
-" noremap <silent> <C-l> :Lines<CR>
-noremap <silent> <C-w> :Buffers<CR>
+noremap <silent> <C-h> :FzfLua oldfiles cwd=~<CR>
+noremap <silent> <A-P> :FzfLua builtin<CR>
+noremap <silent> <C-l> :FzfLua lines<CR>
+"noremap <silent> <C-.> :FzfLua resume<CR>
+noremap <silent> z= :FzfLua spell_suggest<CR>
+noremap <silent> <C-w> :FzfLua buffers<CR>
 noremap <leader>; :History:<CR>
+augroup fzf_commands
+  autocmd!
+  autocmd FileType fzf tnoremap <silent> <buffer> <A-j> <down>
+  autocmd FileType fzf tnoremap <silent> <buffer> <A-k> <up>
+  autocmd FileType fzf tnoremap <silent> <buffer> <A-J> <down><down><down><down><down>
+  autocmd FileType fzf tnoremap <silent> <buffer> <A-K> <up><up><up><up><up>
+augroup end
+lua <<EOF
+require'fzf-lua'.setup {
+	global_resume = true,
+	global_resume_query = true,
+	winopts = {
+		height = 0.95,
+		width = 0.95,
+		preview = {
+			scrollbar = 'float',
+		},
+		fullscreen = false,
+		vertical	   = 'down:45%',	  -- up|down:size
+		horizontal	 = 'right:60%',	 -- right|left:size
+		hidden		 = 'nohidden',
+		title = true,
+	},
+	keymap = {
+		-- These override the default tables completely
+		-- no need to set to `false` to disable a bind
+		-- delete or modify is sufficient
+		builtin = {
+			["<c-f>"]	  = "toggle-fullscreen",
+			["<c-r>"]	  = "toggle-preview-wrap",
+			["<c-p>"]	  = "toggle-preview",
+			["<c-y>"]	  = "preview-page-up",
+			["<c-o>"]	  = "preview-page-down",
+			["<S-left>"]   = "preview-page-reset",
+		},
+		fzf = {
+			["esc"]		= "abort",
+			["ctrl-h"]	 = "unix-line-discard",
+			["ctrl-k"]	 = "half-page-down",
+			["ctrl-b"]	 = "half-page-up",
+			["ctrl-n"]	 = "beginning-of-line",
+			["ctrl-a"]	 = "end-of-line",
+			["alt-a"]	  = "toggle-all",
+			["f3"]		 = "toggle-preview-wrap",
+			["f4"]		 = "toggle-preview",
+			["shift-up"]   = "preview-page-up",
+			["shift-down"] = "preview-page-down",
+			["ctrl-j"]	 = "down",
+			["ctrl-k"]	 = "up",
+		},
+	},
+  previewers = {
+	cat = {
+	  cmd			 = "cat",
+	  args			= "--number",
+	},
+	bat = {
+	  cmd			 = "bat",
+	  args			= "--style=numbers,changes --color always",
+	  theme		   = 'Coldark-Dark', -- bat preview theme (bat --list-themes)
+	  config		  = nil,			-- nil uses $BAT_CONFIG_PATH
+	},
+	head = {
+	  cmd			 = "head",
+	  args			= nil,
+	},
+	git_diff = {
+	  cmd_deleted	 = "git diff --color HEAD --",
+	  cmd_modified	= "git diff --color HEAD",
+	  cmd_untracked   = "git diff --color --no-index /dev/null",
+	  -- pager		= "delta",	  -- if you have `delta` installed
+	},
+	man = {
+	  cmd			 = "man -c %s | col -bx",
+	},
+	builtin = {
+	  syntax		  = true,		 -- preview syntax highlight?
+	  syntax_limit_l  = 0,			-- syntax limit (lines), 0=nolimit
+	  syntax_limit_b  = 1024*1024,	-- syntax limit (bytes), 0=nolimit
+	},
+  },
+  files = {
+	-- previewer	  = "bat",		  -- uncomment to override previewer
+										-- (name from 'previewers' table)
+										-- set to 'false' to disable
+	prompt			= 'Files❯ ',
+	multiprocess	  = true,		   -- run command in a separate process
+	git_icons		 = true,		   -- show git icons?
+	file_icons		= true,		   -- show file icons?
+	color_icons	   = true,		   -- colorize file|git icons
+	-- executed command priority is 'cmd' (if exists)
+	-- otherwise auto-detect prioritizes `fd`:`rg`:`find`
+	-- default options are controlled by 'fd|rg|find|_opts'
+	-- NOTE: 'find -printf' requires GNU find
+	-- cmd			= "find . -type f -printf '%P\n'",
+	find_opts		 = [[-type f -not -path '*/\.git/*' -printf '%P\n']],
+	rg_opts		   = "--color=never --files --hidden --follow -g '!.git'",
+	fd_opts		   = "--color=never --type f --hidden --follow --exclude .git",
+  },
+  buffers = {
+	prompt			= 'Buffers❯ ',
+	file_icons		= true,		 -- show file icons?
+	color_icons	   = true,		 -- colorize file|git icons
+	sort_lastused	 = true,		 -- sort buffers() by last used
+  },
+}
+EOF
+
+" ==================== fzf-gitignore ====================
+noremap <LEADER>gi :FzfGitignore<CR>
+
+" ==================== rnvimr ====================
+let g:rnvimr_ex_enable = 1
+" let g:rnvimr_bw_enable = 1
+let g:rnvimr_pick_enable = 1
+"let g:rnvimr_draw_border = 0
+let g:rnvimr_enable_picker = 1
+"let g:rnvimr_edit_cmd = 'drop'
+let g:rnvimr_border_attr = {'fg': 14, 'bg': -1}
+highlight link RnvimrNormal CursorLine
+nnoremap <silent> <LEADER>ra :RnvimrToggle<CR><C-\><C-n>:RnvimrResize 0<CR>
+let g:rnvimr_action = {
+			\ '<C-t>': 'NvimEdit tabedit',
+			\ '<C-x>': 'NvimEdit split',
+			\ '<C-v>': 'NvimEdit vsplit',
+			\ 'gw': 'JumpNvimCwd',
+			\ 'yw': 'EmitRangerCwd'
+			\ }
+let g:rnvimr_layout = { 'relative': 'editor',
+			\ 'width': &columns,
+			\ 'height': &lines,
+			\ 'col': 0,
+			\ 'row': 0,
+			\ 'style': 'minimal' }
+let g:rnvimr_presets = [{'width': 0.75, 'height': 0.75}]
 
 " ==================== vim-visual-multi ====================
-"let g:VM_theme             = 'iceblue'
+"let g:VM_theme			 = 'iceblue'
 "let g:VM_default_mappings = 0
-let g:VM_leader                     = {'default': ',', 'visual': ',', 'buffer': ','}
-let g:VM_maps                       = {}
-let g:VM_maps['i']                  = ''
-let g:VM_maps['I']                  = ''
-let g:VM_maps['Find Under']         = '<C-d>'
+let g:VM_leader					 = {'default': ',', 'visual': ',', 'buffer': ','}
+let g:VM_maps					   = {}
+let g:VM_maps['i']				  = ''
+let g:VM_maps['I']				  = ''
+let g:VM_maps['Find Under']		 = '<C-d>'
 let g:VM_maps['Find Subword Under'] = '<C-d>'
-let g:VM_maps['Find Next']          = ''
-let g:VM_maps['Find Prev']          = ''
+let g:VM_maps['Find Next']		  = ''
+let g:VM_maps['Find Prev']		  = ''
 let g:VM_maps['Select Cursor Down'] = '<A-J>'
 let g:VM_maps['Select Cursor Up']   = '<A-K>'
-let g:VM_maps['Remove Region']      = 'q'
-let g:VM_maps['Skip Region']        = '<c-n>'
-let g:VM_maps["Undo"]               = 'u'
-let g:VM_maps["Redo"]               = 'U'
-
-" ==== Far.vim ====
-noremap <LEADER>ff :F  **/*<left><left><left><left><left>
-let g:far#mapping = {
-		\ "replace_undo" : ["u"],
-		\ }
-
+let g:VM_maps['Remove Region']	  = 'q'
+let g:VM_maps['Skip Region']		= '<c-n>'
+let g:VM_maps["Undo"]			   = 'u'
+let g:VM_maps["Redo"]			   = 'U'
 
 " ==================== GitGutter ====================
 " let g:gitgutter_signs = 0
@@ -550,8 +848,13 @@ nnoremap <C-G> :GitGutterPreviewHunk<CR>
 nnoremap g- :GitGutterPrevHunk<CR>
 nnoremap g= :GitGutterNextHunk<CR>
 
-
+" ==================== lazygit.nvim ====================
 noremap \g :Git
+noremap <c-g> :LazyGit<CR>
+let g:lazygit_floating_window_winblend = 0 " transparency of floating window
+let g:lazygit_floating_window_scaling_factor = 1.0 " scaling factor for floating window
+let g:lazygit_floating_window_corner_chars = ['╭', '╮', '╰', '╯'] " customize lazygit popup window corner characters
+let g:lazygit_use_neovim_remote = 1 " for neovim-remote support
 noremap <C-g> :tabe<CR>:-tabmove<CR>:term lazygit<CR>
 "nnoremap <C-n> :tabe<CR>:-tabmove<CR>:term lazynpm<CR>
 
@@ -569,65 +872,65 @@ local lualine = require('lualine')
 -- Color table for highlights
 -- stylua: ignore
 local colors = {
-  bg       = '#202328',
-  fg       = '#bbc2cf',
+  bg	   = '#202328',
+  fg	   = '#bbc2cf',
   yellow   = '#ECBE7B',
-  cyan     = '#008080',
+  cyan	 = '#008080',
   darkblue = '#081633',
-  green    = '#98be65',
+  green	= '#98be65',
   orange   = '#FF8800',
   violet   = '#a9a1e1',
   magenta  = '#c678dd',
-  blue     = '#51afef',
-  red      = '#ec5f67',
+  blue	 = '#51afef',
+  red	  = '#ec5f67',
 }
 
 local conditions = {
   buffer_not_empty = function()
-    return vim.fn.empty(vim.fn.expand('%:t')) ~= 1
+	return vim.fn.empty(vim.fn.expand('%:t')) ~= 1
   end,
   hide_in_width = function()
-    return vim.fn.winwidth(0) > 80
+	return vim.fn.winwidth(0) > 80
   end,
   check_git_workspace = function()
-    local filepath = vim.fn.expand('%:p:h')
-    local gitdir = vim.fn.finddir('.git', filepath .. ';')
-    return gitdir and #gitdir > 0 and #gitdir < #filepath
+	local filepath = vim.fn.expand('%:p:h')
+	local gitdir = vim.fn.finddir('.git', filepath .. ';')
+	return gitdir and #gitdir > 0 and #gitdir < #filepath
   end,
 }
 
 -- Config
 local config = {
   options = {
-    -- Disable sections and component separators
-    component_separators = '',
-    section_separators = '',
-    theme = {
-      -- We are going to use lualine_c an lualine_x as left and
-      -- right section. Both are highlighted by c theme .  So we
-      -- are just setting default looks o statusline
-      normal = { c = { fg = colors.fg, bg = colors.bg } },
-      inactive = { c = { fg = colors.fg, bg = colors.bg } },
-    },
+	-- Disable sections and component separators
+	component_separators = '',
+	section_separators = '',
+	theme = {
+	  -- We are going to use lualine_c an lualine_x as left and
+	  -- right section. Both are highlighted by c theme .  So we
+	  -- are just setting default looks o statusline
+	  normal = { c = { fg = colors.fg, bg = colors.bg } },
+	  inactive = { c = { fg = colors.fg, bg = colors.bg } },
+	},
   },
   sections = {
-    -- these are to remove the defaults
-    lualine_a = {},
-    lualine_b = {},
-    lualine_y = {},
-    lualine_z = {},
-    -- These will be filled later
-    lualine_c = {},
-    lualine_x = {},
+	-- these are to remove the defaults
+	lualine_a = {},
+	lualine_b = {},
+	lualine_y = {},
+	lualine_z = {},
+	-- These will be filled later
+	lualine_c = {},
+	lualine_x = {},
   },
   inactive_sections = {
-    -- these are to remove the defaults
-    lualine_a = {},
-    lualine_b = {},
-    lualine_y = {},
-    lualine_z = {},
-    lualine_c = {},
-    lualine_x = {},
+	-- these are to remove the defaults
+	lualine_a = {},
+	lualine_b = {},
+	lualine_y = {},
+	lualine_z = {},
+	lualine_c = {},
+	lualine_x = {},
   },
 }
 
@@ -643,7 +946,7 @@ end
 
 ins_left {
   function()
-    return '▊'
+	return '▊'
   end,
   color = { fg = colors.blue }, -- Sets highlighting of component
   padding = { left = 0, right = 1 }, -- We don't need space before this
@@ -652,33 +955,33 @@ ins_left {
 ins_left {
   -- mode component
   function()
-    return ''
+	return ''
   end,
   color = function()
-    -- auto change color according to neovims mode
-    local mode_color = {
-      n = colors.red,
-      i = colors.green,
-      v = colors.blue,
-      [''] = colors.blue,
-      V = colors.blue,
-      c = colors.magenta,
-      no = colors.red,
-      s = colors.orange,
-      S = colors.orange,
-      [''] = colors.orange,
-      ic = colors.yellow,
-      R = colors.violet,
-      Rv = colors.violet,
-      cv = colors.red,
-      ce = colors.red,
-      r = colors.cyan,
-      rm = colors.cyan,
-      ['r?'] = colors.cyan,
-      ['!'] = colors.red,
-      t = colors.red,
-    }
-    return { fg = mode_color[vim.fn.mode()] }
+	-- auto change color according to neovims mode
+	local mode_color = {
+	  n = colors.red,
+	  i = colors.green,
+	  v = colors.blue,
+	  [''] = colors.blue,
+	  V = colors.blue,
+	  c = colors.magenta,
+	  no = colors.red,
+	  s = colors.orange,
+	  S = colors.orange,
+	  [''] = colors.orange,
+	  ic = colors.yellow,
+	  R = colors.violet,
+	  Rv = colors.violet,
+	  cv = colors.red,
+	  ce = colors.red,
+	  r = colors.cyan,
+	  rm = colors.cyan,
+	  ['r?'] = colors.cyan,
+	  ['!'] = colors.red,
+	  t = colors.red,
+	}
+	return { fg = mode_color[vim.fn.mode()] }
   end,
   padding = { right = 1 },
 }
@@ -704,9 +1007,9 @@ ins_left {
   sources = { 'nvim_diagnostic' },
   symbols = { error = ' ', warn = ' ', info = ' ' },
   diagnostics_color = {
-    color_error = { fg = colors.red },
-    color_warn = { fg = colors.yellow },
-    color_info = { fg = colors.cyan },
+	color_error = { fg = colors.red },
+	color_warn = { fg = colors.yellow },
+	color_info = { fg = colors.cyan },
   },
 }
 
@@ -714,26 +1017,26 @@ ins_left {
 -- for lualine it's any number greater then 2
 ins_left {
   function()
-    return '%='
+	return '%='
   end,
 }
 
 ins_left {
   -- Lsp server name .
   function()
-    local msg = 'No Active Lsp'
-    local buf_ft = vim.api.nvim_buf_get_option(0, 'filetype')
-    local clients = vim.lsp.get_active_clients()
-    if next(clients) == nil then
-      return msg
-    end
-    for _, client in ipairs(clients) do
-      local filetypes = client.config.filetypes
-      if filetypes and vim.fn.index(filetypes, buf_ft) ~= -1 then
-        return client.name
-      end
-    end
-    return msg
+	local msg = 'No Active Lsp'
+	local buf_ft = vim.api.nvim_buf_get_option(0, 'filetype')
+	local clients = vim.lsp.get_active_clients()
+	if next(clients) == nil then
+	  return msg
+	end
+	for _, client in ipairs(clients) do
+	  local filetypes = client.config.filetypes
+	  if filetypes and vim.fn.index(filetypes, buf_ft) ~= -1 then
+		return client.name
+	  end
+	end
+	return msg
   end,
   icon = ' LSP:',
   color = { fg = '#ffffff', gui = 'bold' },
@@ -765,16 +1068,16 @@ ins_right {
   -- Is it me or the symbol for modified us really weird改
   symbols = { added = ' ', modified = '柳', removed = ' ' },
   diff_color = {
-    added = { fg = colors.green },
-    modified = { fg = colors.orange },
-    removed = { fg = colors.red },
+	added = { fg = colors.green },
+	modified = { fg = colors.orange },
+	removed = { fg = colors.red },
   },
   cond = conditions.hide_in_width,
 }
 
 ins_right {
   function()
-    return '▊'
+	return '▊'
   end,
   color = { fg = colors.blue },
   padding = { left = 1 },
@@ -785,25 +1088,60 @@ lualine.setup(config)
 END
 
 
-" ==== vim-sneak ====
-map f <Plug>Sneak_f
-map F <Plug>Sneak_F
-map t <Plug>Sneak_t
-"map T <Plug>Sneak_T
-map s <Plug>Sneak_s
-map S <Plug>Sneak_S
-let g:sneak#use_ic_scs = 1
-highlight link sneak None
+"" ==== vim-sneak ====
+"map f <Plug>Sneak_f
+"map F <Plug>Sneak_F
+"map t <Plug>Sneak_t
+""map T <Plug>Sneak_T
+"map s <Plug>Sneak_s
+"map S <Plug>Sneak_S
+"let g:sneak#use_ic_scs = 1
+"highlight link sneak None
+
+" ==================== lightspeed ====================
+nmap <expr> f reg_recording() . reg_executing() == "" ? "<Plug>Lightspeed_f" : "f"
+nmap <expr> F reg_recording() . reg_executing() == "" ? "<Plug>Lightspeed_F" : "F"
+nmap <expr> t reg_recording() . reg_executing() == "" ? "<Plug>Lightspeed_t" : "t"
+nmap <expr> T reg_recording() . reg_executing() == "" ? "<Plug>Lightspeed_T" : "T"
+" autocmd BufEnter * map <buffer> <nowait> { <Plug>Lightspeed_S
+map <nowait> " <Plug>Lightspeed_omni_s
+lua <<EOF
+require'lightspeed'.setup {
+  ignore_case = true,
+  -- exit_after_idle_msecs = { unlabeled = 1000, labeled = nil },
+  -- --- s/x ---
+  -- jump_to_unique_chars = { safety_timeout = 400 },
+  -- match_only_the_start_of_same_char_seqs = true,
+  force_beacons_into_match_width = true,
+  -- -- Display characters in a custom way in the highlighted matches.
+  -- substitute_chars = { ['\r'] = '¬', },
+  -- -- Leaving the appropriate list empty effectively disables "smart" mode,
+  -- -- and forces auto-jump to be on or off.
+  safe_labels= {"a", "s", "d", "f", "h", "j", "k", "o", "w", "f", "l", "y", "x", 'c', "v", "i", "g"},
+  -- labels = {},
+  special_keys = {
+    next_match_group = '<space>',
+    prev_match_group = '<tab>',
+  },
+}
+EOF
 
 
 " ==== vim-easymotion ====
 let g:EasyMotion_smartcase = 1
 let g:EasyMotion_use_smartsign_us = 1
 
+" ==== kommentary ====
+nmap <C-_> <Plug>kommentary_line_default
+nmap <C-A-_> <Plug>kommentary_motion_default
+xmap <C-_> <Plug>kommentary_visual_default
+
+" ==== auto-pairs ====
+let g:AutoPairsShortcutToggle = "false"
 
 " ==== coc.nvim ====
 let g:coc_global_extensions = [
-    \ 'coc-css',
+	\ 'coc-css',
 	\ 'coc-diagnostic',
 	\ 'coc-docker',
 	\ 'coc-eslint',
@@ -848,16 +1186,16 @@ function! s:check_back_space() abort
 endfunction
 
 inoremap <silent><expr> <c-0> coc#refresh()
-nnoremap <silent> <LEADER>z :call <SID>show_documentation()<CR>
+nnoremap <silent> gh :call <SID>show_documentation()<CR>
 
 
 function! s:show_documentation()
   if (index(['vim','help'], &filetype) >= 0)
-    execute 'h '.expand('<cword>')
+	execute 'h '.expand('<cword>')
   elseif (coc#rpc#ready())
-    call CocActionAsync('doHover')
+	call CocActionAsync('doHover')
   else
-    execute '!' . &keywordprg . " " . expand('<cword>')
+	execute '!' . &keywordprg . " " . expand('<cword>')
   endif
 endfunction
 " set runtimepath^=~/.config/nvim/coc-extensions/coc-flutter-tools/
@@ -869,7 +1207,7 @@ nnoremap <silent><nowait> <LEADER>d :CocList diagnostics<cr>
 nmap <silent> <LEADER>- <Plug>(coc-diagnostic-prev)
 nmap <silent> <LEADER>= <Plug>(coc-diagnostic-next)
 nmap <LEADER>qf <Plug>(coc-fix-current)
-nnoremap <c-c> :CocCommand<CR>
+nnoremap <LEADER>cc :CocCommand<CR>
 nmap <leader>rn <Plug>(coc-rename)
 xmap <leader>f <Plug>(coc-format-selected)
 command! -nargs=0 Format :call CocAction('format')
@@ -898,7 +1236,7 @@ nnoremap <silent> <space>y :<C-u>CocList -A --normal yank<cr>
 nmap <silent> gd <Plug>(coc-definition)
 nmap <silent> gD :tab sp<CR><Plug>(coc-definition)
 nmap <silent> gy <Plug>(coc-type-definition)
-nmap <silent> gi <Plug>(coc-implementation)
+"nmap <silent> gi <Plug>(coc-implementation)
 nmap <silent> gr <Plug>(coc-references)
 nmap tt :CocCommand explorer<CR>
 " coc-translator
@@ -927,16 +1265,19 @@ autocmd BufRead,BufNewFile tsconfig.json set filetype=jsonc
 
 function! s:generate_compile_commands()
   if empty(glob('CMakeLists.txt'))
-    echo "Can't find CMakeLists.txt"
-    return
+	echo "Can't find CMakeLists.txt"
+	return
   endif
   if empty(glob('.vscode'))
-    execute 'silent !mkdir .vscode'
+	execute 'silent !mkdir .vscode'
   endif
   execute '!cmake -DCMAKE_BUILD_TYPE=debug
-      \ -DCMAKE_EXPORT_COMPILE_COMMANDS=1 -S . -B .vscode'
+	  \ -DCMAKE_EXPORT_COMPILE_COMMANDS=1 -S . -B .vscode'
 endfunction
 command! -nargs=0 Gcmake :call s:generate_compile_commands()
+
+" ==== Antovim ====
+noremap <A-f> :Antovim<CR>
 
 " ==== vimspector ====
 let g:vimspector_enable_mappings = 'HUMAN'
@@ -960,11 +1301,11 @@ sign define vimspectorBPDisabled text=☞ texthl=Normal
 
 "function! s:generate_vimspector_conf()
   "if empty(glob( '.vimspector.json' ))
-    "if &filetype == 'c' || 'cpp' 
-      "!cp ~/.config/nvim/vimspector_conf/c.json ./.vimspector.json
-    "elseif &filetype == 'python'
-      "!cp ~/.config/nvim/vimspector_conf/python.json ./.vimspector.json
-    "endif
+	"if &filetype == 'c' || 'cpp' 
+	  "!cp ~/.config/nvim/vimspector_conf/c.json ./.vimspector.json
+	"elseif &filetype == 'python'
+	  "!cp ~/.config/nvim/vimspector_conf/python.json ./.vimspector.json
+	"endif
   "endif
   "e .vimspector.json
 "endfunction
