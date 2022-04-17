@@ -17,7 +17,7 @@
 	"suggest.floatEnable": true,
 	"suggest.detailField": "preview",
 	"suggest.snippetIndicator": "",
-	//"suggest.triggerCompletionWait": 100,
+	"suggest.triggerCompletionWait": 50,
 	//"suggest.echodocSupport": true,
 	"suggest.completionItemKindLabels": {
 		"class": "\uf0e8",
@@ -62,7 +62,7 @@
 	"importCost.bundleSizeDecoration": "both",
 	"importCost.typescriptExtensions": ["\\.tsx?$"],
 	"importCost.javascriptExtensions": ["\\.jsx?$"],
-	////"importCost.showcalculatingdecoration": true,
+	// "importCost.showcalculatingdecoration": true,
 	"snippets.ultisnips.directories": [
 		"~/.config/nvim/Ultisnips/",
 		"~/.config/nvim/plugged/vim-snippets/UltiSnips/"
@@ -102,7 +102,7 @@
 	"explorer.file.column.indent.indentLine": true,
 	"explorer.file.showHiddenFiles": true,
 	"explorer.icon.enableNerdfont": true,
-	////"explorer.file.column.git.showIgnored": true,
+	// "explorer.file.column.git.showIgnored": true,
 	"explorer.keyMappingMode": "none",
 	"explorer.buffer.showHiddenBuffers": false,
 	"explorer.keyMappings.global": {
@@ -157,7 +157,7 @@
 	"flutter.openDevLogSplitCommand": "botright 12split",
 	"flutter.lsp.initialization.onlyAnalyzeProjectsWithOpenFiles": false,
 	"flutter.trace.server": "off",
-	//"tslint.autoFixOnSave": false,
+	// "tslint.autoFixOnSave": false,
 	"python.autoComplete.addBrackets": true,
 	"python.jediEnabled": false,
 	"python.formatting.provider": "yapf",
@@ -199,13 +199,6 @@
 		"lua": {
 			"command": "lua-lsp",
 			"filetypes": ["lua"]
-		},
-		"swift": {
-			"command": "/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/sourcekit-lsp",
-			"args": [],
-			"filetypes": ["swift"],
-			"initializationOptions": {},
-			"settings": {}
 		},
 		"golang": {
 			"command": "gopls",

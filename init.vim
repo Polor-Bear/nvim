@@ -345,24 +345,49 @@ call plug#begin('~/.config/nvim/plugged')
 Plug 'nvim-treesitter/nvim-treesitter'
 Plug 'nvim-treesitter/playground'
 
+" highlight
+"Plug 'cateduo/vsdark.nvim'
+Plug 'joshdick/onedark.vim'
+
+" Status line
+Plug 'nvim-lualine/lualine.nvim'
+"Plug 'vim-airline/vim-airline'
+"Plug 'theniceboy/eleline.vim'
+
 " General Highlighter
 Plug 'RRethy/vim-hexokinase', { 'do': 'make hexokinase' }
 Plug 'RRethy/vim-illuminate'
+
+" File navigation
+Plug 'junegunn/fzf', { 'do': { -> fzf#install() } }
+Plug 'junegunn/fzf.vim'
+Plug 'ibhagwan/fzf-lua'
+Plug 'majutsushi/tagbar'
+Plug 'kevinhwang91/rnvimr'
 
 " Debugger
 Plug 'puremourning/vimspector', {'do': './install_gadget.py --enable-c --enable-python'}
 "--enable-go
 
-" highlight
-"Plug 'cateduo/vsdark.nvim'
-Plug 'joshdick/onedark.vim'
+" Auto Complete
+Plug 'neoclide/coc.nvim', {'branch': 'release'}
+Plug 'honza/vim-snippets'
 
-" If you want to have icons in your statusline choose one of these
-Plug 'nvim-lualine/lualine.nvim'
-Plug 'luochen1990/rainbow'
-Plug 'kyazdani42/nvim-web-devicons'
-"Plug 'vim-airline/vim-airline'
-"Plug 'theniceboy/eleline.vim'
+" Undo Tree
+Plug 'mbbill/undotree'
+
+" Git
+Plug 'airblade/vim-gitgutter'
+Plug 'theniceboy/vim-gitignore', { 'for': ['gitignore', 'vim-plug'] }
+Plug 'theniceboy/fzf-gitignore', { 'do': ':UpdateRemotePlugins' }
+
+" HTML, CSS, JavaScript, Typescript, PHP, JSON, etc.
+Plug 'alvan/vim-closetag'
+
+" Python
+Plug 'vim-python/python-syntax'
+Plug 'numirias/semshi', { 'do': ':UpdateRemotePlugins' }
+Plug 'tweekmonster/braceless.vim', { 'for' :['python', 'vim-plug'] }
 
 " Markdown
 Plug 'vimwiki/vimwiki'
@@ -374,37 +399,6 @@ Plug 'dkarter/bullets.vim'
 " Editor Enhancement
 Plug 'petertriho/nvim-scrollbar'
 Plug 'kevinhwang91/nvim-hlslens'
-
-Plug 'mbbill/undotree'
-
-Plug 'majutsushi/tagbar'
-
-Plug 'junegunn/goyo.vim'
-"Plug 'ron89/thesaurus_query.vim'
-
-Plug 'Yggdroot/indentLine'
-
-Plug 'kshenoy/vim-signature'
-
-
-" Plug 'tmhedberg/SimpylFold'
-
-Plug 'hardcoreplayers/dashboard-nvim'
-
-" File navigation
-Plug 'junegunn/fzf', { 'do': { -> fzf#install() } }
-Plug 'junegunn/fzf.vim'
-Plug 'ibhagwan/fzf-lua'
-Plug 'kevinhwang91/rnvimr'
-
-" Git
-Plug 'airblade/vim-gitgutter'
-Plug 'theniceboy/vim-gitignore', { 'for': ['gitignore', 'vim-plug'] }
-Plug 'theniceboy/fzf-gitignore', { 'do': ':UpdateRemotePlugins' }
-
-" HTML, CSS, JavaScript, Typescript, PHP, JSON, etc.
-Plug 'alvan/vim-closetag'
-
 Plug 'justinmk/vim-sneak'
 Plug 'easymotion/vim-easymotion'
 Plug 'ggandor/lightspeed.nvim'
@@ -416,16 +410,25 @@ Plug 'tpope/vim-surround'
 Plug 'gcmt/wildfire.vim'
 Plug 'godlygeek/tabular' " ga, or :Tabularize <regex> to align
 Plug 'junegunn/vim-peekaboo'
+Plug 'AndrewRadev/splitjoin.vim'
+Plug 'theniceboy/vim-move'
+Plug 'Yggdroot/indentLine'
 
-" Auto Complete
-Plug 'neoclide/coc.nvim', {'branch': 'release'}
-Plug 'honza/vim-snippets'
+" For general writing
+Plug 'junegunn/goyo.vim'
+Plug 'ron89/thesaurus_query.vim'
 
-" Python
-Plug 'vim-python/python-syntax'
-Plug 'numirias/semshi', { 'do': ':UpdateRemotePlugins' }
-Plug 'tweekmonster/braceless.vim', { 'for' :['python', 'vim-plug'] }
+" Bookmarks
+Plug 'MattesGroeger/vim-bookmarks'
 
+" dashboard
+Plug 'hardcoreplayers/dashboard-nvim'
+
+" Other visual enhancement
+Plug 'luochen1990/rainbow'
+Plug 'mg979/vim-xtabline'
+" Plug 'ryanoasis/vim-devicons'
+Plug 'kyazdani42/nvim-web-devicons'
 
 call plug#end()
 " ==================================== plugins end =================================
@@ -495,9 +498,9 @@ require("scrollbar").setup({
 EOF
 
 " ==================== nvim-hlslens ====================
-noremap <silent> = <Cmd>execute('normal! ' . v:count1 . 'n')<CR>
+noremap <silent> = <Cmd>execute('normal! ' . v:count1 . 'nzz')<CR>
             \<Cmd>lua require('hlslens').start()<CR>
-noremap <silent> - <Cmd>execute('normal! ' . v:count1 . 'N')<CR>
+noremap <silent> - <Cmd>execute('normal! ' . v:count1 . 'Nzz')<CR>
             \<Cmd>lua require('hlslens').start()<CR>
 noremap * *<Cmd>lua require('hlslens').start()<CR>
 noremap # #<Cmd>lua require('hlslens').start()<CR>
@@ -589,33 +592,23 @@ map <LEADER>th :ThesaurusQueryLookupCurrentWord<CR>
 " ==================== tabular ====================
 vmap ga :Tabularize /
 
+" ===== vim-move ====
+vmap <A-h> <Plug>MoveBlockLeft
+vmap <A-j> <Plug>MoveBlockDown
+vmap <A-k> <Plug>MoveBlockUp
+vmap <A-l> <Plug>MoveBlockRight
+
 " ==================== rainbow ====================
 let g:rainbow_active = 1
 
-" ==== vim-signature ====
-let g:SignatureMap = {
-		\ 'Leader'			 :  "m",
-		\ 'PlaceNextMark'	  :  "m,",
-		\ 'ToggleMarkAtLine'   :  "m.",
-		\ 'PurgeMarksAtLine'   :  "dm-",
-		\ 'DeleteMark'		 :  "dm",
-		\ 'PurgeMarks'		 :  "dm/",
-		\ 'PurgeMarkers'	   :  "dm?",
-		\ 'GotoNextLineAlpha'  :  "m<LEADER>",
-		\ 'GotoPrevLineAlpha'  :  "",
-		\ 'GotoNextSpotAlpha'  :  "m<LEADER>",
-		\ 'GotoPrevSpotAlpha'  :  "",
-		\ 'GotoNextLineByPos'  :  "",
-		\ 'GotoPrevLineByPos'  :  "",
-		\ 'GotoNextSpotByPos'  :  "mn",
-		\ 'GotoPrevSpotByPos'  :  "mp",
-		\ 'GotoNextMarker'	 :  "",
-		\ 'GotoPrevMarker'	 :  "",
-		\ 'GotoNextMarkerAny'  :  "",
-		\ 'GotoPrevMarkerAny'  :  "",
-		\ 'ListLocalMarks'	 :  "m/",
-		\ 'ListLocalMarkers'   :  "m?"
-		\ }
+" ==================== xtabline ====================
+let g:xtabline_settings = {}
+let g:xtabline_settings.enable_mappings = 0
+let g:xtabline_settings.tabline_modes = ['tabs', 'buffers']
+let g:xtabline_settings.enable_persistance = 0
+let g:xtabline_settings.last_open_first = 1
+" noremap to :XTabCycleMode<CR>
+noremap \p :echo expand('%:p')<CR>
 
 " ==== Undotree ====
 noremap <A-U> :UndotreeToggle<CR>
