@@ -159,7 +159,9 @@
 	"flutter.trace.server": "off",
 	// "tslint.autoFixOnSave": false,
 	"python.autoComplete.addBrackets": true,
-	"python.jediEnabled": false,
+    "python.linting.flake8Path": "/usr/bin/flake8",
+    "python.linting.flake8Enabled": true,
+	// "python.jediEnabled": false,
 	"python.formatting.provider": "yapf",
 	"python.formatting.yapfArgs": [
 		"--style",
