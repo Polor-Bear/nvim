@@ -1,22 +1,26 @@
 {
-	"configurations": {
-		"launch": {
-			"adapter": "CodeLLDB",
-			"configuration": {
-				"request": "launch",
-				"program": "${file}",
-				"cwd": "${workspaceFolder}",
-                "args": [],
-                "enviroment" :[],
-                "externalConsole":true,
-                "MIMode": "lldb"
-			},
-			"breakpoints": {
-				"exception": {
-					"raised": "N",
-					"uncaught": ""
-				}
-			}
-		}
-	}
+  "configurations": {
+    "Launch": {
+      "adapter": "vscode-cpptools",
+      "filetypes": [ "cpp", "c", "objc", "rust" ],
+      "configuration": {
+        "request": "launch",
+        "program": "${file}",
+        "args": [],
+        "cwd": "${workspaceRoot}",
+        "environment": [],
+        "externalConsole": true,
+        "MIMode": "${file}"
+      }
+    },
+    "Attach": {
+      "adapter": "vscode-cpptools",
+      "filetypes": [ "cpp", "c", "objc", "rust" ],
+      "configuration": {
+        "request": "attach",
+        "program": "${file}",
+        "MIMode": "lldb"
+      }
+    }
+  }
 }

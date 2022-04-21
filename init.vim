@@ -18,7 +18,7 @@ let &t_ut=''
 set encoding=utf-8
 let g:python_host_prog='/usr/bin/Python2/'
 let g:python3_host_prog='/usr/bin/python3'
-let g:ruby_host_prog='$/home/bear/.local/share/gem/ruby/3.0.0'
+let g:ruby_host_prog='/usr/bin/ruby'
 
 " =========================
 " ==== Editor Behavior ====
@@ -26,6 +26,8 @@ let g:ruby_host_prog='$/home/bear/.local/share/gem/ruby/3.0.0'
 set number
 "set relativenumber
 set cursorline
+set conceallevel=0
+exec "set conceallevel=0"
 set wrap
 set showcmd
 set wildmenu
@@ -90,6 +92,8 @@ let g:terminal_color_14 = '#9AEDFE'
 let mapleader="\<Space>"
 noremap <LEADER>; :
 
+noremap <A-q> @a
+
 " Smart search and highlight
 set hlsearch
 exec "nohlsearch"
@@ -105,14 +109,14 @@ inoremap <C-y> <C-t>
 noremap n =
 
 " set <Alt> + hjkl
-inoremap <A-h> <Esc>ha
-"inoremap <A-j> <Esc>ja
-"inoremap <A-k> <Esc>ka
-inoremap <A-l> <Esc>la
+inoremap <A-h> <left>
+inoremap <A-j> <down>
+inoremap <A-k> <up>
+inoremap <A-l> <right>
 inoremap <A-w> <Esc>wa
 inoremap <A-b> <Esc>ba
-noremap <A-o> <A-o><Esc>
-noremap <A-O> <A-O><Esc>
+noremap <A-o> o<Esc>
+noremap <A-O> O<Esc>
 
 " Save & Quit
 noremap Q :q<CR>
@@ -177,7 +181,8 @@ noremap <LEADER>h <C-w>h
 noremap <LEADER>j <C-w>j
 noremap <LEADER>k <C-w>k
 noremap <LEADER>l <C-w>l
-noremap qf <C-w>o
+noremap <LEADER>qf <C-w>o
+noremap <A-q><A-f> <C-w>o:q<CR>  " quit vimspector
 
 " fold
 noremap <LEADER>o za
@@ -366,8 +371,8 @@ Plug 'majutsushi/tagbar'
 Plug 'kevinhwang91/rnvimr'
 
 " Debugger
-Plug 'puremourning/vimspector', {'do': './install_gadget.py --enable-c --enable-python'}
-"--enable-go
+Plug 'puremourning/vimspector', {'do': './install_gadget.py --enable-python --enable-rust'}
+" --enable-go --enable-bash
 
 " Auto Complete
 Plug 'neoclide/coc.nvim', {'branch': 'release'}
@@ -399,7 +404,7 @@ Plug 'dkarter/bullets.vim'
 " Editor Enhancement
 Plug 'petertriho/nvim-scrollbar'
 Plug 'kevinhwang91/nvim-hlslens'
-Plug 'justinmk/vim-sneak'
+" Plug 'justinmk/vim-sneak'
 Plug 'easymotion/vim-easymotion'
 Plug 'ggandor/lightspeed.nvim'
 Plug 'jiangmiao/auto-pairs'
@@ -521,24 +526,24 @@ nnoremap <silent> <Leader>fw :DashboardFindWord<CR>
 nnoremap <silent> <Leader>cn :DashboardNewFile<CR>
 
 let g:dashboard_custom_header = [
-  \'			   ▄▄██████████▄▄			 ',
-  \'			   ▀▀▀   ██   ▀▀▀			 ',
-  \'	   ▄██▄   ▄▄████████████▄▄   ▄██▄	 ',
-  \'	 ▄███▀  ▄████▀▀▀	▀▀▀████▄  ▀███▄   ',
-  \'	████▄ ▄███▀			  ▀███▄ ▄████  ',
-  \'   ███▀█████▀▄████▄	  ▄████▄▀█████▀███ ',
-  \'   ██▀  ███▀ ██████	  ██████ ▀███  ▀██ ',
-  \'	▀  ▄██▀  ▀████▀  ▄▄  ▀████▀  ▀██▄  ▀  ',
-  \'	   ███		   ▀▀		   ███	 ',
-  \'	   ██████████████████████████████	 ',
-  \'   ▄█  ▀██  ███   ██	██   ███  ██▀  █▄ ',
-  \'   ███  ███ ███   ██	██   ███▄███  ███ ',
-  \'   ▀██▄████████   ██	██   ████████▄██▀ ',
-  \'	▀███▀ ▀████   ██	██   ████▀ ▀███▀  ',
-  \'	 ▀███▄  ▀███████	███████▀  ▄███▀   ',
-  \'	   ▀███	▀▀██████████▀▀▀   ███▀	 ',
-  \'		 ▀	▄▄▄	██	▄▄▄	▀	   ',
-  \'			   ▀████████████▀			 ',
+  \'               ▄▄██████████▄▄             ',
+  \'               ▀▀▀   ██   ▀▀▀             ',
+  \'       ▄██▄   ▄▄████████████▄▄   ▄██▄     ',
+  \'     ▄███▀  ▄████▀▀▀    ▀▀▀████▄  ▀███▄   ',
+  \'    ████▄ ▄███▀              ▀███▄ ▄████  ',
+  \'   ███▀█████▀▄████▄      ▄████▄▀█████▀███ ',
+  \'   ██▀  ███▀ ██████      ██████ ▀███  ▀██ ',
+  \'    ▀  ▄██▀  ▀████▀  ▄▄  ▀████▀  ▀██▄  ▀  ',
+  \'       ███           ▀▀           ███     ',
+  \'       ██████████████████████████████     ',
+  \'   ▄█  ▀██  ███   ██    ██   ███  ██▀  █▄ ',
+  \'   ███  ███ ███   ██    ██   ███▄███  ███ ',
+  \'   ▀██▄████████   ██    ██   ████████▄██▀ ',
+  \'    ▀███▀ ▀████   ██    ██   ████▀ ▀███▀  ',
+  \'     ▀███▄  ▀███████    ███████▀  ▄███▀   ',
+  \'       ▀███    ▀▀██████████▀▀▀   ███▀     ',
+  \'         ▀    ▄▄▄    ██    ▄▄▄    ▀       ',
+  \'               ▀████████████▀             ',
 \]
 
 
@@ -788,7 +793,7 @@ let g:rnvimr_ex_enable = 1
 let g:rnvimr_pick_enable = 1
 "let g:rnvimr_draw_border = 0
 let g:rnvimr_enable_picker = 1
-"let g:rnvimr_edit_cmd = 'drop'
+let g:rnvimr_edit_cmd = 'drop'
 let g:rnvimr_border_attr = {'fg': 14, 'bg': -1}
 highlight link RnvimrNormal CursorLine
 nnoremap <silent> <LEADER>ra :RnvimrToggle<CR><C-\><C-n>:RnvimrResize 0<CR>
@@ -1130,7 +1135,7 @@ nmap <C-A-_> <Plug>kommentary_motion_default
 xmap <C-_> <Plug>kommentary_visual_default
 
 " ==== auto-pairs ====
-let g:AutoPairsShortcutToggle = "false"
+let g:AutoPairsShortcutToggle = ""
 
 " ==== coc.nvim ====
 let g:coc_global_extensions = [
@@ -1199,7 +1204,7 @@ endfunction
 nnoremap <silent><nowait> <LEADER>d :CocList diagnostics<cr>
 nmap <silent> <LEADER>- <Plug>(coc-diagnostic-prev)
 nmap <silent> <LEADER>= <Plug>(coc-diagnostic-next)
-nmap <LEADER>qf <Plug>(coc-fix-current)
+" nmap <LEADER>qf <Plug>(coc-fix-current)
 nnoremap <LEADER>cc :CocCommand<CR>
 nmap <leader>rn <Plug>(coc-rename)
 xmap <leader>f <Plug>(coc-format-selected)
@@ -1247,11 +1252,11 @@ nmap <leader>a  :<C-u>set operatorfunc=<SID>cocActionsOpenFromSelected<CR>g@
 " coc-tasks
 noremap <silent> <leader>ts :CocList tasks<CR>
 " coc-snippets
-imap <C-l> <Plug>(coc-snippets-expand)
-vmap <C-j> <Plug>(coc-snippets-select)
-let g:coc_snippet_next = '<c-j>'
-let g:coc_snippet_prev = '<c-k>'
-imap <C-j> <Plug>(coc-snippets-expand-jump)
+imap <A-m> <Plug>(coc-snippets-expand)
+vnoremap <A-n> <Plug>(coc-snippets-select)
+let g:coc_snippet_next = '<A-n>'
+let g:coc_snippet_prev = '<A-p>'
+inoremap <A-n> <Plug>(coc-snippets-expand-jump)
 let g:snips_author = 'Polor Bear'
 autocmd BufRead,BufNewFile tsconfig.json set filetype=jsonc
 
@@ -1283,7 +1288,7 @@ command! -bang -nargs=* LoadVimSpectorJsonTemplate call fzf#run({
 			\   'down': 20,
 			\   'sink': function('<sid>read_template_into_buffer')
 			\ })
-" noremap <leader>vs :tabe .vimspector.json<CR>:LoadVimSpectorJsonTemplate<CR>
+noremap <leader>vs :tabe .vimspector.json<CR>:LoadVimSpectorJsonTemplate<CR>
 "sign define vimspectorBP text=☛ texthl=Normal
 sign define vimspectorBPDisabled text=☞ texthl=Normal
 "sign define vimspectorPC text=🔶 texthl=SpellBad
