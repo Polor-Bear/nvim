@@ -150,6 +150,7 @@ noremap K 5k
 noremap <silent> H ^
 " L key: go to the end of the line
 noremap <silent> L $
+vnoremap <silent> L $h
 
 " Faster in-line navigation
 noremap W 5w
@@ -1184,8 +1185,9 @@ function! s:check_back_space() abort
 	return !col || getline('.')[col - 1]  =~# '\s'
 endfunction
 
-inoremap <silent><expr> <c-0> coc#refresh()
+inoremap <silent><expr> <c-o> coc#refresh()
 nnoremap <silent> gh :call <SID>show_documentation()<CR>
+inoremap <expr> <vr> complete_info() ["selected"] != "-1" ? "\<C-y" : "\<C-g>u\<CR>"
 
 
 function! s:show_documentation()
