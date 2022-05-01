@@ -8,7 +8,7 @@
 	//"coc.source.buffer.firstMatch": false,
 	"coc.source.syntax.firstMatch": false,
 	"suggest.detailMaxLength": 60,
-	"suggest.noselect": true,
+	"suggest.noselect": false,
 	"suggest.enablePreselect": false,
 	"suggest.triggerAfterInsertEnter": true,
 	"suggest.autoTrigger": "always",
@@ -64,6 +64,7 @@
 	"importCost.javascriptExtensions": ["\\.jsx?$"],
 	// "importCost.showcalculatingdecoration": true,
 	"snippets.ultisnips.directories": [
+        "Ultisnips",
 		"~/.config/nvim/Ultisnips/",
 		"~/.config/nvim/plugged/vim-snippets/UltiSnips/"
 	],

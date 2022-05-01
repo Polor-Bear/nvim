@@ -24,10 +24,10 @@ let g:ruby_host_prog='/usr/bin/ruby'
 " ==== Editor Behavior ====
 " =========================
 set number
-"set relativenumber
-set cursorline
-set conceallevel=0
-exec "set conceallevel=0"
+" set relativenumber
+" set cursorline
+" set conceallevel=0
+" exec "set conceallevel=0"
 set wrap
 set showcmd
 set wildmenu
@@ -64,7 +64,7 @@ endif
 " ==================== Terminal Behaviors ====================
 let g:neoterm_autoscroll = 1
 autocmd TermOpen term://* startinsert
-tnoremap <C-N> <C-\><C-N>
+tnoremap <Esc> <C-\><C-N>
 tnoremap <C-O> <C-\><C-N><C-O>
 
 " ==================== Terminal Colors ====================
@@ -137,6 +137,7 @@ nnoremap Y y$
 vnoremap Y "+y
 nnoremap <A-p> "+p
 vnoremap <A-p> "+p
+inoremap <C-v> <C-r>
 
 " Indentation
 nnoremap < <<
@@ -232,8 +233,8 @@ noremap tml :+tabmove<CR>
 " ============================
 " Spelling Check with <space>sc
 noremap <LEADER>sc :set spell!<CR>
-noremap <C-p> ea<C-x>s
-inoremap <C-p> <Esc>a<C-x>s
+" noremap <C-p> ea<C-x>s
+" inoremap <C-p> <Esc>a<C-x>s
 noremap gb evb
 noremap <C-n> K
 
@@ -265,6 +266,9 @@ autocmd Filetype markdown inoremap <buffer> ;6 ######<Space><Enter><++><Esc>kA
 autocmd Filetype markdown inoremap <buffer> ;l --------<Enter>
 "autocmd Filetype markdown inoremap <buffer> | |<A-w>
 
+autocmd Filetype c inoremap /* /**/<left><left>
+autocmd Filetype cpp inoremap /* /**/<left><left>
+
 " Open a new instance of st with the cwd
 nnoremap \t :tabe<CR>:-tabmove<CR>:term sh -c 'st'<CR><C-\><C-N>:q<CR>
 " Opening a terminal window
@@ -277,7 +281,7 @@ autocmd BufEnter * silent! lcd %:p:h
 " Call figlet
 noremap tx :r !figlet 
 " find and replace
-noremap \s :%s//g<left><left>
+noremap \s :%s//<left>
 " set wrap
 noremap <LEADER>sw :set wrap<CR>
 " press f10 to show hlgroup
@@ -314,31 +318,6 @@ func! CompileRunGcc()
 		exec "InstantMarkdownPreview"
 	elseif &filetype == 'vimwiki'
 		exec "InstantMarkdownPreview"
-	endif
-endfunc
-
-
-noremap <C-A-n> :call MyCodeRunner()<CR><C-w>k
-func! MyCodeRunner()
-	exec "w"
-	if &filetype == 'c'
-		:sall
-		set splitbelow
-		:sp
-		:res -10
-		:term gcc % -o %< && time ./%<
-	elseif &filetype == 'cpp'
-		:sall
-		set splitbelow
-		:sp
-		:res -10
-		:term g++ % -o %< && time ./%<
-	elseif &filetype == 'python'
-		:sall
-		set splitbelow
-		:sp
-		:res -10
-		:term python3 %
 	endif
 endfunc
 
@@ -418,7 +397,7 @@ Plug 'godlygeek/tabular' " ga, or :Tabularize <regex> to align
 Plug 'junegunn/vim-peekaboo'
 Plug 'AndrewRadev/splitjoin.vim'
 Plug 'theniceboy/vim-move'
-Plug 'Yggdroot/indentLine'
+" Plug 'Yggdroot/indentLine'
 
 " For general writing
 Plug 'junegunn/goyo.vim'
@@ -850,7 +829,6 @@ nnoremap g= :GitGutterNextHunk<CR>
 
 " ==================== lazygit.nvim ====================
 noremap \g :Git
-noremap <c-g> :LazyGit<CR>
 let g:lazygit_floating_window_winblend = 0 " transparency of floating window
 let g:lazygit_floating_window_scaling_factor = 1.0 " scaling factor for floating window
 let g:lazygit_floating_window_corner_chars = ['╭', '╮', '╰', '╯'] " customize lazygit popup window corner characters
@@ -1133,7 +1111,7 @@ let g:EasyMotion_use_smartsign_us = 1
 
 " ==== kommentary ====
 nmap <C-_> <Plug>kommentary_line_default
-nmap <C-A-_> <Plug>kommentary_motion_default
+nmap <A-?> <Plug>kommentary_motion_default
 xmap <C-_> <Plug>kommentary_visual_default
 
 " ==== auto-pairs ====
@@ -1187,7 +1165,7 @@ endfunction
 
 inoremap <silent><expr> <c-o> coc#refresh()
 nnoremap <silent> gh :call <SID>show_documentation()<CR>
-inoremap <expr> <vr> complete_info() ["selected"] != "-1" ? "\<C-y" : "\<C-g>u\<CR>"
+inoremap <expr> <TAB> complete_info()["selected"] != "-1" ? "\<C-y>" : "\<C-g>u\<TAB>"
 
 
 function! s:show_documentation()
@@ -1210,6 +1188,7 @@ nmap <silent> <LEADER>= <Plug>(coc-diagnostic-next)
 " nmap <LEADER>qf <Plug>(coc-fix-current)
 nnoremap <LEADER>cc :CocCommand<CR>
 nmap <leader>rn <Plug>(coc-rename)
+nmap <leader>f <Plug>(coc-format-selected)
 xmap <leader>f <Plug>(coc-format-selected)
 command! -nargs=0 Format :call CocAction('format')
 
