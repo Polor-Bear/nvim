@@ -1166,6 +1166,7 @@ endfunction
 inoremap <silent><expr> <c-o> coc#refresh()
 nnoremap <silent> gh :call <SID>show_documentation()<CR>
 inoremap <expr> <TAB> complete_info()["selected"] != "-1" ? "\<C-y>" : "\<C-g>u\<TAB>"
+inoremap <expr> <CR> complete_info()["selected"] != "-1" ? "\<C-g>u\<CR>" : "\<C-g>u\<CR>"
 
 
 function! s:show_documentation()
